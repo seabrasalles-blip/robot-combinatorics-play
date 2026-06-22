@@ -86,8 +86,8 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
               </div>
             ))}
             {bodies.map(b => (
-              <>
-                <div key={`row-${b.id}`} style={headerCell}>
+              <Fragment key={`row-${b.id}`}>
+                <div style={headerCell}>
                   <img src={b.imagem} alt={b.nome} style={{ width: 60 }} />
                 </div>
                 {heads.map(h => {
@@ -95,7 +95,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
                   return <Cell key={cellId} id={cellId} filled={filled[cellId]}
                     allCombos={allCombos} />;
                 })}
-              </>
+              </Fragment>
             ))}
           </div>
         </div>
