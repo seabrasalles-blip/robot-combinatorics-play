@@ -103,12 +103,20 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
         <div style={{
           position: "absolute", right: 18, top: 110, width: 230, bottom: 110,
           background: "rgba(255,255,255,0.92)", padding: 12, borderRadius: 18,
-          border: "3px solid #60a5fa", overflow: "auto",
+          border: "3px solid #60a5fa",
+          display: "flex", flexDirection: "column",
         }}>
           <h3 style={{ margin: "0 0 10px", fontSize: 16, fontWeight: 800 }}>
             Arraste os robôs
           </h3>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+          <div style={{
+            flex: 1, minHeight: 0,
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateRows: "repeat(3, 1fr)",
+            gap: 6,
+            justifyItems: "center", alignItems: "center",
+          }}>
             {pool.map(c => <ComboPiece key={c.id} id={c.id} head={c.head} body={c.body} />)}
           </div>
         </div>
@@ -176,7 +184,7 @@ function ComboPiece({ id, head, body }: { id: string; head: Piece; body: Piece }
         borderRadius: 10, padding: 4,
         display: "flex", justifyContent: "center",
       }}>
-      <RobotPreview head={head} body={body} size={60} />
+      <RobotPreview head={head} body={body} size={48} />
     </div>
   );
 }
