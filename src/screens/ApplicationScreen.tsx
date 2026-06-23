@@ -4,14 +4,6 @@ import FeedbackModal from "@/components/FeedbackModal";
 import ImageButton from "@/components/ImageButton";
 import { btnSeguir } from "@/assets/placeholders";
 
-interface Situation {
-  title: string;
-  prompt: string;
-  steps: { template: (inputs: JSX.Element[]) => JSX.Element; inputs: number }[];
-  answers: string[];
-}
-
-// Cada situação tem 7 campos.
 const situations: { title: string; text: string; lines: string[]; answers: string[] }[] = [
   {
     title: "Situação 1 - Roupas",
@@ -55,43 +47,50 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
   const [idx, setIdx] = useState(0);
   const [values, setValues] = useState<string[][]>(situations.map(s => s.answers.map(() => "")));
   const [solved, setSolved] = useState<boolean[]>([false, false, false]);
-  const [feedback, setFeedback] = useState<{ msg: string; tone: "success" | "warn" } | null>(null);
+  const [inlineMsg, setInlineMsg] = useState<string | null>(null);
+  const [showFinalPopup, setShowFinalPopup] = useState(false);
 
   const allDone = solved.every(Boolean);
   const s = situations[idx];
 
   const check = () => {
+    setInlineMsg(null);
     const vs = values[idx];
     if (vs.some(v => v.trim() === "")) {
-      setFeedback({ msg: "Preencha todos os campos da situação.", tone: "warn" });
+      setInlineMsg("Preencha todos os campos da situação.");
       return;
     }
     const ok = vs.every((v, i) => v.trim() === s.answers[i]);
     if (ok) {
       const ns = [...solved]; ns[idx] = true; setSolved(ns);
-      setFeedback({ msg: "Ótimo! Você usou o mesmo jeito de pensar dos robôs.", tone: "success" });
+      if (ns.every(Boolean)) {
+        setShowFinalPopup(true);
+      }
     } else {
-      setFeedback({
-        msg: "Não some os dois grupos. Pense: cada opção do primeiro grupo combina com todas as opções do segundo.",
-        tone: "warn",
-      });
+      setInlineMsg("Não some os dois grupos. Cada opção do primeiro grupo combina com todas as opções do segundo.");
     }
   };
 
   const setVal = (i: number, v: string) => {
+    setInlineMsg(null);
     setValues(prev => prev.map((arr, k) => k === idx ? arr.map((x, j) => j === i ? v : x) : arr));
+  };
+
+  const handleFinalNext = () => {
+    setShowFinalPopup(false);
+    setInlineMsg(null);
+    onNext();
   };
 
   return (
     <ScreenShell title="Outras situações" subtitle="Use o mesmo raciocínio dos robôs.">
-      {/* Tabs */}
       <div style={{
         position: "absolute", top: 110, left: 180, right: 30,
         display: "flex", gap: 8,
       }}>
         {situations.map((sit, i) => (
           <button key={i}
-            onClick={() => setIdx(i)}
+            onClick={() => { setIdx(i); setInlineMsg(null); }}
             disabled={i > 0 && !solved[i - 1]}
             style={{
               flex: 1, padding: "10px 12px", fontWeight: 700, fontSize: 16,
@@ -120,7 +119,8 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 18, display: "flex", justifyContent: "flex-end" }}>
+        <div style={{ marginTop: 18, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12 }}>
+          {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
           <button onClick={check} disabled={solved[idx]}
             style={{
               padding: "10px 22px", fontSize: 18, fontWeight: 700,
@@ -133,17 +133,18 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
         </div>
       </div>
 
-      {allDone && (
+      {allDone && !showFinalPopup && (
         <div style={{ position: "absolute", bottom: 22, right: 28 }}>
           <ImageButton src={btnSeguir} alt="Seguir" width={220} onClick={onNext} />
         </div>
       )}
 
       <FeedbackModal
-        open={!!feedback}
-        message={feedback?.msg || ""}
-        tone={feedback?.tone}
-        onClose={() => setFeedback(null)}
+        open={showFinalPopup}
+        message="Muito bem! Você usou o mesmo jeito de pensar dos robôs em todas as situações."
+        tone="success"
+        variant="final"
+        onClose={handleFinalNext}
       />
     </ScreenShell>
   );
@@ -167,3 +168,9 @@ function renderLine(template: string, values: string[], setVal: (i: number, v: s
     return <span key={k}>{p}</span>;
   });
 }
+
+const inlineMsgStyle: React.CSSProperties = {
+  background: "#fff7ed", border: "2px solid #ea580c",
+  color: "#9a3412", fontSize: 14, fontWeight: 600,
+  padding: "6px 12px", borderRadius: 10,
+};

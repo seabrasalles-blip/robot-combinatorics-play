@@ -17,11 +17,11 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
   const bodies = useMemo(() => getBodies(3), []);
   const total = 9;
 
-  const [filled, setFilled] = useState<Record<string, string>>({}); // cellId -> combinationId
-  const [feedback, setFeedback] = useState<{ msg: string; tone: "success" | "warn" } | null>(null);
+  const [filled, setFilled] = useState<Record<string, string>>({});
+  const [inlineMsg, setInlineMsg] = useState<string | null>(null);
+  const [showFinalPopup, setShowFinalPopup] = useState(false);
   const done = Object.keys(filled).length === total;
 
-  // Robôs sorteio: criar todas 9 combinações como peças arrastáveis
   const allCombos = useMemo(() => {
     const list: { id: string; head: Piece; body: Piece }[] = [];
     heads.forEach(h => bodies.forEach(b => list.push({ id: getCombinationId(h.id, b.id), head: h, body: b })));
@@ -34,33 +34,33 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
   );
 
   const onDragEnd = (e: DragEndEvent) => {
+    setInlineMsg(null);
     const { active, over } = e;
     if (!over) return;
     const comboId = active.id as string;
-    const cellId = over.id as string; // "cell-<headId>-<bodyId>"
+    const cellId = over.id as string;
     const [, headId, bodyId] = cellId.split("-");
     const expectedId = getCombinationId(headId, bodyId);
     if (comboId !== expectedId) {
-      setFeedback({
-        msg: "Veja a cabeça da coluna e o corpo da linha. O robô precisa juntar essas duas peças.",
-        tone: "warn",
-      });
+      setInlineMsg("Veja a cabeça da coluna e o corpo da linha. O robô precisa juntar essas duas peças.");
       return;
     }
     if (filled[cellId]) return;
     const next = { ...filled, [cellId]: comboId };
     setFilled(next);
     if (Object.keys(next).length === total) {
-      setFeedback({
-        msg: "Muito bem! O quadro mostra 9 combinações: 3 cabeças × 3 corpos = 9 robôs.",
-        tone: "success",
-      });
+      setShowFinalPopup(true);
     }
   };
 
-  // Combos restantes a arrastar
   const placed = new Set(Object.values(filled));
   const pool = allCombos.filter(c => !placed.has(c.id));
+
+  const handleFinalNext = () => {
+    setShowFinalPopup(false);
+    setInlineMsg(null);
+    onNext();
+  };
 
   return (
     <ScreenShell
@@ -68,7 +68,6 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
       subtitle="Observe a cabeça no topo e o corpo na lateral. O robô fica no encontro entre os dois."
     >
       <DndContext sensors={sensors} onDragEnd={onDragEnd}>
-        {/* Quadro central */}
         <div style={{
           position: "absolute", left: 200, top: 130, width: 560,
         }}>
@@ -98,9 +97,9 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
               </Fragment>
             ))}
           </div>
+          {inlineMsg && <div style={{ ...inlineMsgStyle, marginTop: 12 }}>{inlineMsg}</div>}
         </div>
 
-        {/* Pool de robôs */}
         <div style={{
           position: "absolute", right: 18, top: 110, width: 230, bottom: 110,
           background: "rgba(255,255,255,0.92)", padding: 12, borderRadius: 18,
@@ -114,17 +113,18 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
           </div>
         </div>
 
-        {done && (
+        {done && !showFinalPopup && (
           <div style={{ position: "absolute", bottom: 22, right: 28 }}>
             <ImageButton src={btnSeguir} alt="Seguir" width={220} onClick={onNext} />
           </div>
         )}
 
         <FeedbackModal
-          open={!!feedback}
-          message={feedback?.msg || ""}
-          tone={feedback?.tone}
-          onClose={() => setFeedback(null)}
+          open={showFinalPopup}
+          message="Muito bem! O quadro mostra 9 combinações: 3 cabeças × 3 corpos = 9 robôs."
+          tone="success"
+          variant="final"
+          onClose={handleFinalNext}
         />
       </DndContext>
     </ScreenShell>
@@ -134,6 +134,12 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
 const headerCell: React.CSSProperties = {
   display: "flex", alignItems: "center", justifyContent: "center",
   background: "#fde68a", borderRadius: 10,
+};
+
+const inlineMsgStyle: React.CSSProperties = {
+  background: "#fff7ed", border: "2px solid #ea580c",
+  color: "#9a3412", fontSize: 14, fontWeight: 600,
+  padding: "6px 12px", borderRadius: 10, textAlign: "center",
 };
 
 function Cell({ id, filled, allCombos }: {
