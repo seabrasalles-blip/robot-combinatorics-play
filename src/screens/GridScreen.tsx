@@ -184,7 +184,7 @@ function ComboPiece({ id, head, body }: { id: string; head: Piece; body: Piece }
         borderRadius: 10, padding: 4,
         display: "flex", justifyContent: "center",
       }}>
-      <RobotPreview head={head} body={body} size={60} />
+      <RobotPreview head={head} body={body} size={48} />
     </div>
   );
 }
