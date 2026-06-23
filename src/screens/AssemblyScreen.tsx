@@ -120,26 +120,39 @@ export default function AssemblyScreen({
         </div>
 
         {/* Painel direito - galeria */}
-        <div style={panelRight}>
+        <div style={{ ...panelRight, display: "flex", flexDirection: "column" }}>
           <h3 style={panelTitle}>Robôs descobertos</h3>
-          <div style={{
-            display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8,
-            maxHeight: 380, overflow: "auto",
-          }}>
-            {[...found].map(id => {
-              const [h, b] = id.split("__");
-              const hp = heads.find(x => x.id === h)!;
-              const bp = bodies.find(x => x.id === b)!;
-              return (
-                <div key={id} style={{
-                  background: "white", padding: 6, borderRadius: 10,
-                  border: "2px solid #86efac", display: "flex", justifyContent: "center",
-                }}>
-                  <RobotPreview head={hp} body={bp} size={70} />
-                </div>
-              );
-            })}
-          </div>
+          {(() => {
+            const cols = total >= 9 ? 3 : 2;
+            const rows = total <= 4 ? 2 : total === 6 ? 3 : Math.ceil(total / cols);
+            const thumb = total <= 4 ? 70 : total === 6 ? 56 : 48;
+            const cardPad = total <= 4 ? 6 : 4;
+            return (
+              <div style={{
+                flex: 1, minHeight: 0,
+                display: "grid",
+                gridTemplateColumns: `repeat(${cols}, 1fr)`,
+                gridTemplateRows: `repeat(${rows}, 1fr)`,
+                gap: 6,
+              }}>
+                {[...found].map(id => {
+                  const [h, b] = id.split("__");
+                  const hp = heads.find(x => x.id === h)!;
+                  const bp = bodies.find(x => x.id === b)!;
+                  return (
+                    <div key={id} style={{
+                      background: "white", padding: cardPad, borderRadius: 10,
+                      border: "2px solid #86efac",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      minHeight: 0, minWidth: 0,
+                    }}>
+                      <RobotPreview head={hp} body={bp} size={thumb} />
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
 
         {found.size === total && !showFinalPopup && (
