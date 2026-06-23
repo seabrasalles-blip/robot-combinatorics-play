@@ -15,7 +15,10 @@ export default function RobotsApp() {
   const [screen, setScreen] = useState(1);
 
   const go = (n: number) => setScreen(n);
-  const restart = () => { setResetKey(k => k + 1); setScreen(1); };
+  const restart = () => {
+    setResetKey((k) => k + 1);
+    setScreen(1);
+  };
 
   return (
     <Stage>
@@ -25,8 +28,9 @@ export default function RobotsApp() {
         {screen === 3 && (
           <AssemblyScreen
             key="s3"
-            headsCount={2} bodiesCount={2}
-            title="Vamos montar! (2 × 2)"
+            headsCount={2}
+            bodiesCount={2}
+            title="Vamos montar!"
             helper="Arraste uma cabeça e um corpo para o centro."
             showTotalInCounter
             completionMessage="Você encontrou todos os 4 robôs! Cada cabeça combinou com cada corpo."
@@ -36,7 +40,8 @@ export default function RobotsApp() {
         {screen === 4 && (
           <AssemblyScreen
             key="s4"
-            headsCount={3} bodiesCount={2}
+            headsCount={3}
+            bodiesCount={2}
             title="Continue investigando (3 cabeças e 2 corpos)"
             helper="Agora temos 3 cabeças e 2 corpos. Tente descobrir todos os robôs diferentes."
             showTotalInCounter={false}
