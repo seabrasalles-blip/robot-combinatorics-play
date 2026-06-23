@@ -12,6 +12,7 @@ import corpo1Png from "@/assets/corpo1.png";
 import corpo2Png from "@/assets/corpo2.png";
 import corpo3Png from "@/assets/corpo3.png";
 import leoPng from "@/assets/leo.png";
+import leoMeioCorpoPng from "@/assets/leomeiocorpo.png";
 import caparoboPng from "@/assets/caparobo.png";
 import fundoMakerPng from "@/assets/fundo-maker.png";
 import comecarPng from "@/assets/comecar.png";
@@ -28,6 +29,7 @@ export const corpo2 = corpo2Png;
 export const corpo3 = corpo3Png;
 
 export const leo = leoPng;
+export const leoMeioCorpo = leoMeioCorpoPng;
 export const caparobo = caparoboPng;
 export const fundoMaker = fundoMakerPng;
 
