@@ -1,26 +1,48 @@
+# Plano: Melhoria da faixa de orientação das telas internas
+
 ## Objetivo
-Restaurar a legibilidade dos títulos/instruções das telas internas, colocando-os dentro de uma faixa branca semitransparente com borda colorida, em vez de soltos sobre o fundo da oficina.
+Refinar o visual do componente `ScreenShell` para que a faixa de orientação fique mais equilibrada, legível e com menos espaço vazio, sem alterar lógica, fundo, assets dos robôs ou botões de navegação.
 
-## Alteração
-Editar apenas `src/components/ScreenShell.tsx` (usado por todas as telas internas: Assembly, Paths, Grid, MathRecord, Application, Mission, Final). Assim a correção se propaga sem mexer em cada tela.
+## Alterações em `src/components/ScreenShell.tsx`
 
-### Novo header (faixa de orientação no topo)
-- Container `header` com:
-  - `background: rgba(255, 255, 255, 0.95)`
-  - `border: 3px solid #f97316` (laranja; nas telas com tom azul mantemos laranja como padrão da oficina)
-  - `borderRadius: 18px`
-  - `padding: 12px 20px`
-  - `boxShadow: 0 4px 12px rgba(0,0,0,0.15)`
-  - `display: flex; alignItems: center; gap: 14px`
-  - `maxWidth` ~90% centralizado, `margin: 0 auto 12px`
-- Rosto do Léo (`rostoleo.png`) à esquerda dentro da faixa quando `showLeo` for true, ~56px, circular.
-- Bloco de texto à direita, alinhado à esquerda:
-  - `h1` título: `fontSize: 26`, `color: #0f172a` (azul-escuro), `fontWeight: 800`, **sem `textShadow`**.
-  - `p` subtítulo: `fontSize: 18`, `color: #1e3a8a`, `fontWeight: 500`, sem sombra.
-- Remover o `<img leo>` grande do canto inferior esquerdo (substituído pelo rostinho na faixa). Mantém prop `showLeo` para controlar a presença do rosto na faixa.
+1. **Dimensões e posicionamento da faixa**
+   - Reduzir a largura da faixa para uma largura fixa confortável (`maxWidth: 720px`), centralizada no topo.
+   - Manter margens laterais e superior confortáveis (`margin: "14px auto 10px"`).
+   - Fundo branco com leve transparência: `rgba(255, 255, 255, 0.94)`.
+   - Borda laranja fina: `2px solid #f97316`.
+   - Arredondamento generoso: `borderRadius: 24px`.
+   - Sombra suave para separar do fundo: `boxShadow: 0 6px 18px rgba(0,0,0,0.12)`.
 
-### Fora de escopo
-Fundo `fundo-maker.png`, assets dos robôs, galeria, lógica de atividades, FeedbackModal, botão "Seguir", layouts internos das telas — nada disso muda.
+2. **Ícone do Léo**
+   - Manter `rostoLeo.png` como ícone à esquerda.
+   - Criar um círculo azul-claro (`#dbeafe`) por trás do rosto, com borda laranja (`2px solid #f97316`).
+   - Dimensões do círculo: `52px × 52px`; imagem do rosto: `44px × 44px`, centralizada e arredondada.
 
-## Resultado
-Todas as telas internas passam a exibir título e instrução dentro de uma faixa branca legível, com Léo à esquerda, sem texto solto sobre o fundo e sem sombra escura.
+3. **Tipografia e hierarquia**
+   - Título em azul-escuro (`#0f172a`), maior e em negrito: `fontSize: 28px`, `fontWeight: 800`, `lineHeight: 1.1`.
+   - Subtítulo abaixo do título, menor mas bem legível: `fontSize: 16px`, `color: #1e40af`, `fontWeight: 500`, `lineHeight: 1.3`.
+   - Remover qualquer `textShadow` ou contorno escuro.
+   - Garantir que não haja texto solto sobre o fundo da oficina.
+
+4. **Espaçamento interno**
+   - Reduzir o espaço vazio à direita ajustando o padding (`padding: "10px 18px"`).
+   - Alinhar texto à esquerda, próximo do ícone, sem esticar a coluna de texto.
+
+## Telas afetadas
+Todas as telas internas que utilizam `ScreenShell` herdarão o novo layout automaticamente:
+- `AssemblyScreen` (telas 3 e 4)
+- `GridScreen` (tela 5)
+- `PathsScreen` (tela 6)
+- `MathRecordScreen` (tela 7)
+- `ApplicationScreen` (tela 8)
+
+## Fora de escopo
+- Lógica das atividades (drag/drop, respostas, contadores, galeria).
+- Assets dos robôs e fundo `fundo-maker.png`.
+- Botões "Seguir" / "Recomeçar" e modais de feedback.
+- Telas `CoverScreen`, `FinalScreen` e `MissionScreen` (se não usarem `ScreenShell`).
+
+## Validação
+Após a edição, será verificado:
+- Build do Vite sem erros (`bun run build` ou equivalente).
+- Preview para confirmar que a faixa está centralizada, mais estreita, com título maior, subtítulo abaixo e sem textos soltos sobre o fundo.

@@ -19,40 +19,53 @@ export default function ScreenShell({ title, subtitle, children, showLeo = true 
               display: "flex",
               alignItems: "center",
               gap: 14,
-              background: "rgba(255, 255, 255, 0.95)",
-              border: "3px solid #f97316",
-              borderRadius: 18,
-              padding: "12px 20px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-              maxWidth: "92%",
-              margin: "0 auto 12px",
+              background: "rgba(255, 255, 255, 0.94)",
+              border: "2px solid #f97316",
+              borderRadius: 24,
+              padding: "10px 18px",
+              boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
+              width: "fit-content",
+              maxWidth: 720,
+              margin: "14px auto 10px",
             }}
           >
             {showLeo && (
-              <img
-                src={rostoLeo}
-                alt="Léo"
+              <div
                 style={{
-                  width: 56,
-                  height: 56,
+                  width: 52,
+                  height: 52,
                   borderRadius: "50%",
-                  objectFit: "cover",
-                  flexShrink: 0,
+                  background: "#dbeafe",
                   border: "2px solid #f97316",
-                  background: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  overflow: "hidden",
                 }}
-              />
+              >
+                <img
+                  src={rostoLeo}
+                  alt="Léo"
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
             )}
-            <div style={{ textAlign: "left", flex: 1, minWidth: 0 }}>
+            <div style={{ textAlign: "left", minWidth: 0 }}>
               {title && (
                 <h1
                   style={{
                     margin: 0,
-                    fontSize: 26,
+                    fontSize: 28,
                     color: "#0f172a",
                     fontFamily: "system-ui, sans-serif",
                     fontWeight: 800,
-                    lineHeight: 1.15,
+                    lineHeight: 1.1,
                   }}
                 >
                   {title}
@@ -62,11 +75,11 @@ export default function ScreenShell({ title, subtitle, children, showLeo = true 
                 <p
                   style={{
                     margin: "4px 0 0",
-                    fontSize: 18,
-                    color: "#1e3a8a",
+                    fontSize: 16,
+                    color: "#1e40af",
                     fontFamily: "system-ui, sans-serif",
                     fontWeight: 500,
-                    lineHeight: 1.25,
+                    lineHeight: 1.3,
                   }}
                 >
                   {subtitle}
@@ -75,6 +88,7 @@ export default function ScreenShell({ title, subtitle, children, showLeo = true 
             </div>
           </header>
         )}
+
         {children}
       </div>
     </div>
