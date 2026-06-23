@@ -1,15 +1,16 @@
 import ImageButton from "./ImageButton";
-import { btnEntendi } from "@/assets/placeholders";
+import { btnEntendi, btnSeguir } from "@/assets/placeholders";
 
 interface FeedbackModalProps {
   open: boolean;
   message: string;
   tone?: "success" | "info" | "warn";
+  variant?: "info" | "final";
   onClose: () => void;
 }
 
 export default function FeedbackModal({
-  open, message, tone = "info", onClose,
+  open, message, tone = "info", variant = "info", onClose,
 }: FeedbackModalProps) {
   if (!open) return null;
   const colors = {
@@ -17,6 +18,8 @@ export default function FeedbackModal({
     info:    { border: "#2563eb", bg: "#eff6ff" },
     warn:    { border: "#ea580c", bg: "#fff7ed" },
   }[tone];
+
+  const isFinal = variant === "final";
 
   return (
     <div
@@ -46,9 +49,9 @@ export default function FeedbackModal({
           {message}
         </p>
         <ImageButton
-          src={btnEntendi}
-          alt="Entendi"
-          width={180}
+          src={isFinal ? btnSeguir : btnEntendi}
+          alt={isFinal ? "Seguir" : "Entendi"}
+          width={isFinal ? 220 : 180}
           onClick={onClose}
         />
       </div>
