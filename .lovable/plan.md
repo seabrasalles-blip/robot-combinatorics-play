@@ -1,24 +1,26 @@
 ## Objetivo
-Remover a barra de rolagem da galeria "Robôs descobertos" nas telas de montagem (3 e 4) e ajustar a grade do painel da Tela 5 (GridScreen, 9 combinações) para caber inteira no 16:9 sem scroll. Layout apenas — sem mexer em assets, lógica de drag, fundo ou regras pedagógicas.
+Restaurar a legibilidade dos títulos/instruções das telas internas, colocando-os dentro de uma faixa branca semitransparente com borda colorida, em vez de soltos sobre o fundo da oficina.
 
-## Mudanças
+## Alteração
+Editar apenas `src/components/ScreenShell.tsx` (usado por todas as telas internas: Assembly, Paths, Grid, MathRecord, Application, Mission, Final). Assim a correção se propaga sem mexer em cada tela.
 
-### 1. `src/screens/AssemblyScreen.tsx` (Telas 3 e 4)
-No painel direito (linhas ~123-143), a galeria atualmente usa `gridTemplateColumns: "repeat(2, 1fr)"` + `maxHeight: 380, overflow: "auto"`.
+### Novo header (faixa de orientação no topo)
+- Container `header` com:
+  - `background: rgba(255, 255, 255, 0.95)`
+  - `border: 3px solid #f97316` (laranja; nas telas com tom azul mantemos laranja como padrão da oficina)
+  - `borderRadius: 18px`
+  - `padding: 12px 20px`
+  - `boxShadow: 0 4px 12px rgba(0,0,0,0.15)`
+  - `display: flex; alignItems: center; gap: 14px`
+  - `maxWidth` ~90% centralizado, `margin: 0 auto 12px`
+- Rosto do Léo (`rostoleo.png`) à esquerda dentro da faixa quando `showLeo` for true, ~56px, circular.
+- Bloco de texto à direita, alinhado à esquerda:
+  - `h1` título: `fontSize: 26`, `color: #0f172a` (azul-escuro), `fontWeight: 800`, **sem `textShadow`**.
+  - `p` subtítulo: `fontSize: 18`, `color: #1e3a8a`, `fontWeight: 500`, sem sombra.
+- Remover o `<img leo>` grande do canto inferior esquerdo (substituído pelo rostinho na faixa). Mantém prop `showLeo` para controlar a presença do rosto na faixa.
 
-- Remover `maxHeight` e `overflow: "auto"`.
-- Definir a grade dinamicamente a partir de `total = headsCount × bodiesCount`:
-  - `total <= 4` (Tela 3, 2×2): `gridTemplateColumns: "repeat(2, 1fr)"`, `gridTemplateRows: "repeat(2, 1fr)"`, miniatura `size={70}`.
-  - `total === 6` (Tela 4, 2×3): `gridTemplateColumns: "repeat(2, 1fr)"`, `gridTemplateRows: "repeat(3, 1fr)"`, miniatura `size={56}`, card com `padding: 4`.
-  - `total >= 9`: `gridTemplateColumns: "repeat(3, 1fr)"`, miniatura `size={48}`.
-- Card do robô: reduzir `padding` para 4–6 e `gap` da grade para 6, garantindo que tudo caiba dentro da altura disponível do `panelRight` sem scroll.
-- A grade ocupa `flex: 1` (ou `height: "100%"`) abaixo do título, sem `overflow`.
+### Fora de escopo
+Fundo `fundo-maker.png`, assets dos robôs, galeria, lógica de atividades, FeedbackModal, botão "Seguir", layouts internos das telas — nada disso muda.
 
-### 2. `src/screens/GridScreen.tsx` (Tela 5, 9 combinações)
-Linha 106 tem `overflow: "auto"` no contêiner da grade lateral.
-- Remover `overflow: "auto"`.
-- Manter grade 3×3 com miniaturas menores (≈56–64 px) e padding reduzido para garantir encaixe sem scroll.
-
-## Fora de escopo
-- Assets, fundos, posição do painel, lógica de drag/drop, conteúdo das mensagens, FeedbackModal, botão "Seguir".
-- `ApplicationScreen` e `FinalScreen` (não são telas de montagem com galeria de robôs descobertos).
+## Resultado
+Todas as telas internas passam a exibir título e instrução dentro de uma faixa branca legível, com Léo à esquerda, sem texto solto sobre o fundo e sem sombra escura.
