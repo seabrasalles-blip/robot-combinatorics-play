@@ -31,6 +31,7 @@ export const corpo3 = corpo3Png;
 
 export const leo = leoPng;
 export const leoMeioCorpo = leoMeioCorpoPng;
+export const rostoLeo = rostoLeoPng;
 export const caparobo = caparoboPng;
 export const fundoMaker = fundoMakerPng;
 
