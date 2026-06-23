@@ -33,8 +33,8 @@ export default function AssemblyScreen({
   const [head, setHead] = useState<Piece | null>(null);
   const [body, setBody] = useState<Piece | null>(null);
   const [found, setFound] = useState<Set<string>>(new Set());
-  const [feedback, setFeedback] = useState<{ msg: string; tone: "success" | "info" | "warn" } | null>(null);
-  const [done, setDone] = useState(false);
+  const [inlineMsg, setInlineMsg] = useState<string | null>(null);
+  const [showFinalPopup, setShowFinalPopup] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -45,31 +45,27 @@ export default function AssemblyScreen({
     if (!h || !b) return;
     const id = getCombinationId(h.id, b.id);
     if (found.has(id)) {
-      setFeedback({ msg: "Esse robô já foi descoberto. Tente combinar outra cabeça com outro corpo.", tone: "warn" });
+      setInlineMsg("Esse robô já foi descoberto. Tente outra combinação.");
+      setHead(null); setBody(null);
       return;
     }
     const next = new Set(found); next.add(id);
     setFound(next);
     if (next.size === total) {
-      setDone(true);
-      setFeedback({ msg: completionMessage, tone: "success" });
-    } else {
-      setFeedback({ msg: "Boa! Você montou um robô diferente.", tone: "success" });
+      setShowFinalPopup(true);
     }
     setHead(null); setBody(null);
   };
 
   const onDragEnd = (e: DragEndEvent) => {
+    setInlineMsg(null);
     const { active, over } = e;
     if (!over) return;
     const piece: Piece = active.data.current?.piece;
     const kind: "head" | "body" = active.data.current?.kind;
     const accepts = over.data.current?.accepts;
     if (kind !== accepts) {
-      setFeedback({
-        msg: "Arraste uma cabeça para o espaço de cabeça e um corpo para o espaço de corpo.",
-        tone: "warn",
-      });
+      setInlineMsg("Coloque cabeça no espaço de cabeça e corpo no espaço de corpo.");
       return;
     }
     if (kind === "head") {
@@ -84,6 +80,12 @@ export default function AssemblyScreen({
   const counterText = showTotalInCounter
     ? `Robôs descobertos: ${found.size}/${total}`
     : `Robôs descobertos: ${found.size}`;
+
+  const handleFinalNext = () => {
+    setShowFinalPopup(false);
+    setInlineMsg(null);
+    onNext();
+  };
 
   return (
     <ScreenShell title={title} subtitle={helper}>
@@ -108,12 +110,13 @@ export default function AssemblyScreen({
           <div style={{ fontSize: 28, color: "#1e293b", margin: "2px 0" }}>↓</div>
           <DropSlot id="slot-body" accepts="body" current={body} label="corpo" width={160} height={130} />
           <button
-            onClick={() => { setHead(null); setBody(null); }}
+            onClick={() => { setHead(null); setBody(null); setInlineMsg(null); }}
             style={{
               marginTop: 14, padding: "6px 16px", borderRadius: 12,
               border: "2px solid #cbd5e1", background: "white",
               fontSize: 14, cursor: "pointer", fontWeight: 600,
             }}>limpar</button>
+          {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
         </div>
 
         {/* Painel direito - galeria */}
@@ -139,17 +142,18 @@ export default function AssemblyScreen({
           </div>
         </div>
 
-        {done && (
+        {found.size === total && !showFinalPopup && (
           <div style={{ position: "absolute", bottom: 22, right: 28 }}>
             <ImageButton src={btnSeguir} alt="Seguir" width={220} onClick={onNext} />
           </div>
         )}
 
         <FeedbackModal
-          open={!!feedback}
-          message={feedback?.msg || ""}
-          tone={feedback?.tone}
-          onClose={() => setFeedback(null)}
+          open={showFinalPopup}
+          message={completionMessage}
+          tone="success"
+          variant="final"
+          onClose={handleFinalNext}
         />
       </DndContext>
     </ScreenShell>
@@ -182,4 +186,9 @@ const counter: React.CSSProperties = {
 const pieceGrid: React.CSSProperties = {
   display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8,
   justifyItems: "center",
+};
+const inlineMsgStyle: React.CSSProperties = {
+  marginTop: 12, background: "#fff7ed", border: "2px solid #ea580c",
+  color: "#9a3412", fontSize: 14, fontWeight: 600,
+  padding: "6px 12px", borderRadius: 10, maxWidth: 260, textAlign: "center",
 };

@@ -12,24 +12,34 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
 
   const expected = ["3", "4", "12", "12"];
   const [values, setValues] = useState(["", "", "", ""]);
-  const [feedback, setFeedback] = useState<{ msg: string; tone: "success" | "warn" } | null>(null);
+  const [inlineMsg, setInlineMsg] = useState<string | null>(null);
   const [solved, setSolved] = useState(false);
+  const [showFinalPopup, setShowFinalPopup] = useState(false);
 
   const check = () => {
+    setInlineMsg(null);
     if (values.some(v => v.trim() === "")) {
-      setFeedback({ msg: "Preencha todos os campos antes de conferir.", tone: "warn" });
+      setInlineMsg("Preencha todos os campos antes de conferir.");
       return;
     }
     const ok = values.every((v, i) => v.trim() === expected[i]);
     if (ok) {
       setSolved(true);
-      setFeedback({ msg: "Isso mesmo! São 4 grupos de 3 combinações. Por isso, 4 × 3 = 12.", tone: "success" });
+      setShowFinalPopup(true);
     } else {
-      setFeedback({
-        msg: "Observe quantos corpos existem e quantas cabeças existem. Cada cabeça combina com todos os corpos.",
-        tone: "warn",
-      });
+      setInlineMsg("Observe quantos corpos e quantas cabeças existem. Cada cabeça combina com todos os corpos.");
     }
+  };
+
+  const updateVal = (i: number, v: string) => {
+    setInlineMsg(null);
+    setValues(prev => prev.map((x, idx) => idx === i ? v : x));
+  };
+
+  const handleFinalNext = () => {
+    setShowFinalPopup(false);
+    setInlineMsg(null);
+    onNext();
   };
 
   return (
@@ -61,19 +71,20 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
           display: "flex", flexDirection: "column", gap: 10, fontSize: 20,
         }}>
           <Line>
-            1. Cada cabeça combina com <Input value={values[0]} onChange={v => upd(0, v, setValues)} /> corpos.
+            1. Cada cabeça combina com <Input value={values[0]} onChange={v => updateVal(0, v)} /> corpos.
           </Line>
           <Line>
-            2. Temos <Input value={values[1]} onChange={v => upd(1, v, setValues)} /> cabeças.
+            2. Temos <Input value={values[1]} onChange={v => updateVal(1, v)} /> cabeças.
           </Line>
           <Line>
-            3. Podemos somar: 3 + 3 + 3 + 3 = <Input value={values[2]} onChange={v => upd(2, v, setValues)} />.
+            3. Podemos somar: 3 + 3 + 3 + 3 = <Input value={values[2]} onChange={v => updateVal(2, v)} />.
           </Line>
           <Line>
-            4. Também podemos multiplicar: 4 × 3 = <Input value={values[3]} onChange={v => upd(3, v, setValues)} />.
+            4. Também podemos multiplicar: 4 × 3 = <Input value={values[3]} onChange={v => updateVal(3, v)} />.
           </Line>
 
-          <div style={{ marginTop: "auto", display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ marginTop: "auto", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12 }}>
+            {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
             <button onClick={check}
               style={{
                 padding: "10px 22px", fontSize: 18, fontWeight: 700,
@@ -84,17 +95,18 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
         </div>
       </div>
 
-      {solved && (
+      {solved && !showFinalPopup && (
         <div style={{ position: "absolute", bottom: 22, right: 28 }}>
           <ImageButton src={btnSeguir} alt="Seguir" width={220} onClick={onNext} />
         </div>
       )}
 
       <FeedbackModal
-        open={!!feedback}
-        message={feedback?.msg || ""}
-        tone={feedback?.tone}
-        onClose={() => setFeedback(null)}
+        open={showFinalPopup}
+        message="Isso mesmo! São 4 grupos de 3 combinações. Por isso, 4 × 3 = 12."
+        tone="success"
+        variant="final"
+        onClose={handleFinalNext}
       />
     </ScreenShell>
   );
@@ -119,6 +131,8 @@ function Input({ value, onChange }: { value: string; onChange: (v: string) => vo
   );
 }
 
-function upd(i: number, v: string, setValues: React.Dispatch<React.SetStateAction<string[]>>) {
-  setValues(prev => prev.map((x, idx) => idx === i ? v : x));
-}
+const inlineMsgStyle: React.CSSProperties = {
+  background: "#fff7ed", border: "2px solid #ea580c",
+  color: "#9a3412", fontSize: 14, fontWeight: 600,
+  padding: "6px 12px", borderRadius: 10,
+};
