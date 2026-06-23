@@ -4,7 +4,7 @@ import { btnSeguir, leoMeioCorpo } from "@/assets/placeholders";
 
 export default function MissionScreen({ onNext }: { onNext: () => void }) {
   return (
-    <ScreenShell title="A taarefa de hoje" showLeo={false}>
+    <ScreenShell title="A tarefa de hoje" showLeo={false}>
       <img
         src={leoMeioCorpo}
         alt="Léo"
