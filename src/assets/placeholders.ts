@@ -13,6 +13,7 @@ import corpo2Png from "@/assets/corpo2.png";
 import corpo3Png from "@/assets/corpo3.png";
 import leoPng from "@/assets/leo.png";
 import leoMeioCorpoPng from "@/assets/leomeiocorpo.png";
+import rostoLeoPng from "@/assets/rostoleo.png";
 import caparoboPng from "@/assets/caparobo.png";
 import fundoMakerPng from "@/assets/fundo-maker.png";
 import comecarPng from "@/assets/comecar.png";
