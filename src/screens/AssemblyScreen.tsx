@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DndContext, DragEndEvent, PointerSensor, TouchSensor,
   useSensor, useSensors,
@@ -23,6 +23,8 @@ interface AssemblyScreenProps {
   onNext: () => void;
 }
 
+type Revealing = { head: Piece; body: Piece; id: string };
+
 export default function AssemblyScreen({
   headsCount, bodiesCount, title, helper,
   showTotalInCounter, showCounter = true, completionMessage, onNext,
@@ -35,7 +37,14 @@ export default function AssemblyScreen({
   const [body, setBody] = useState<Piece | null>(null);
   const [found, setFound] = useState<Set<string>>(new Set());
   const [inlineMsg, setInlineMsg] = useState<string | null>(null);
+  const [inlineTone, setInlineTone] = useState<"success" | "warn">("warn");
+  const [revealing, setRevealing] = useState<Revealing | null>(null);
   const [showFinalPopup, setShowFinalPopup] = useState(false);
+  const revealTimer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (revealTimer.current) window.clearTimeout(revealTimer.current);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -46,19 +55,30 @@ export default function AssemblyScreen({
     if (!h || !b) return;
     const id = getCombinationId(h.id, b.id);
     if (found.has(id)) {
+      setInlineTone("warn");
       setInlineMsg("Esse robô já foi descoberto. Tente outra combinação.");
       setHead(null); setBody(null);
       return;
     }
-    const next = new Set(found); next.add(id);
-    setFound(next);
-    if (next.size === total) {
-      setShowFinalPopup(true);
-    }
-    setHead(null); setBody(null);
+    // Nova combinação: revela montagem no centro por 1,2s antes de enviar à galeria
+    setRevealing({ head: h, body: b, id });
+    setInlineTone("success");
+    setInlineMsg("Robô descoberto!");
+    revealTimer.current = window.setTimeout(() => {
+      setFound(prev => {
+        const next = new Set(prev); next.add(id);
+        if (next.size === total) setShowFinalPopup(true);
+        return next;
+      });
+      setHead(null); setBody(null);
+      setRevealing(null);
+      setInlineMsg(null);
+      revealTimer.current = null;
+    }, 1200);
   };
 
   const onDragEnd = (e: DragEndEvent) => {
+    if (revealing) return;
     setInlineMsg(null);
     const { active, over } = e;
     if (!over) return;
@@ -66,6 +86,7 @@ export default function AssemblyScreen({
     const kind: "head" | "body" = active.data.current?.kind;
     const accepts = over.data.current?.accepts;
     if (kind !== accepts) {
+      setInlineTone("warn");
       setInlineMsg("Coloque cabeça no espaço de cabeça e corpo no espaço de corpo.");
       return;
     }
@@ -110,7 +131,7 @@ export default function AssemblyScreen({
           <DropSlot id="slot-head" accepts="head" current={head} label="cabeça" width={140} height={120} />
           <div style={{ fontSize: 28, color: "#1e293b", margin: "2px 0" }}>↓</div>
           <DropSlot id="slot-body" accepts="body" current={body} label="corpo" width={160} height={130} />
-          {!showFinalPopup && (
+          {!showFinalPopup && !revealing && (
             <button
               onClick={() => { setHead(null); setBody(null); setInlineMsg(null); }}
               style={{
@@ -120,7 +141,28 @@ export default function AssemblyScreen({
               }}>limpar</button>
           )}
 
-          {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
+          {inlineMsg && <div style={inlineStyle(inlineTone)}>{inlineMsg}</div>}
+
+          {revealing && (
+            <div
+              className="animate-scale-in"
+              style={{
+                position: "absolute", inset: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                pointerEvents: "none",
+              }}
+            >
+              <div style={{
+                background: "rgba(255,255,255,0.96)",
+                border: "3px solid #16a34a",
+                borderRadius: 18,
+                padding: 14,
+                boxShadow: "0 12px 28px rgba(0,0,0,0.18)",
+              }}>
+                <RobotPreview head={revealing.head} body={revealing.body} size={180} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Painel direito - galeria */}
@@ -204,8 +246,15 @@ const pieceGrid: React.CSSProperties = {
   display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8,
   justifyItems: "center",
 };
-const inlineMsgStyle: React.CSSProperties = {
-  marginTop: 12, background: "#fff7ed", border: "2px solid #ea580c",
-  color: "#9a3412", fontSize: 14, fontWeight: 600,
-  padding: "6px 12px", borderRadius: 10, maxWidth: 260, textAlign: "center",
-};
+const inlineStyle = (tone: "success" | "warn"): React.CSSProperties =>
+  tone === "success"
+    ? {
+        marginTop: 12, background: "#f0fdf4", border: "2px solid #16a34a",
+        color: "#166534", fontSize: 14, fontWeight: 700,
+        padding: "6px 12px", borderRadius: 10, maxWidth: 260, textAlign: "center",
+      }
+    : {
+        marginTop: 12, background: "#fff7ed", border: "2px solid #ea580c",
+        color: "#9a3412", fontSize: 14, fontWeight: 600,
+        padding: "6px 12px", borderRadius: 10, maxWidth: 260, textAlign: "center",
+      };

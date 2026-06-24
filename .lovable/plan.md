@@ -1,21 +1,40 @@
-## Problema
+## Objetivo
 
-O `FeedbackModal.tsx` ainda usa um único bloco de estilos para `info` e `final`. Quando o pop-up final abre com `tone="success"`, o card recebe `background: "#ecfdf5"` (verde-claro) e `border: 5px solid #16a34a` (verde). O redesign anterior não foi aplicado ao arquivo.
+Tornar a montagem perceptível: quando a criança combina cabeça + corpo corretos e inéditos, o robô permanece montado no centro por ~1,2s com mensagem inline "Robô descoberto!", depois é adicionado à galeria e os slots são limpos. Repetições continuam exibindo apenas a mensagem inline atual.
 
-## Correção
+## Mudanças (apenas `src/screens/AssemblyScreen.tsx`)
 
-Em `src/components/FeedbackModal.tsx`, separar o estilo do card por `variant`:
+1. **Novo estado de "revelação"**:
+   - `revealing: { head, body, id } | null` — guarda a combinação enquanto o robô está em destaque no centro.
+   - `locked: boolean` (derivado de `revealing !== null`) — bloqueia novos drops durante a pausa.
 
-- **`variant === "final"`** (novo visual limpo, ignora `tone`):
-  - Card: `background: "rgba(255,255,255,0.96)"`, `border: "3px solid #f97316"` (laranja), `borderRadius: 22`, `padding: "22px 26px 20px"`, `maxWidth: 420`, `width: "min(420px, 86%)"`, `boxShadow: "0 12px 28px rgba(0,0,0,0.18)"`, `textAlign: "center"`.
-  - Título fixo `<h2>Muito bem!</h2>`: `fontSize: 26`, `fontWeight: 800`, `color: "#0f172a"`, `margin: "0 0 10px"`.
-  - Mensagem (`message` recebido, removendo prefixo `"Muito bem! "` se presente): `fontSize: 17`, `lineHeight: 1.4`, `fontWeight: 500`, `color: "#1e293b"`, `margin: "0 0 18px"`.
-  - Botão: `ImageButton src={btnSeguir}` com `width={160}`, centralizado (sem fundo/borda/padding extra — `ImageButton` já é transparente).
+2. **Fluxo em `tryCheck`** quando a combinação é nova:
+   - NÃO adicionar ainda em `found`.
+   - Setar `revealing = { head, body, id }` e `inlineMsg = "Robô descoberto!"`.
+   - `setTimeout(1200ms)`:
+     - Adicionar `id` em `found`.
+     - Se `found.size + 1 === total` → abrir `showFinalPopup`.
+     - Limpar `head`, `body`, `revealing`, `inlineMsg`.
+   - Guardar o timer em `useRef` e limpar no `unmount` para evitar leak.
 
-- **`variant === "info"`** (mantém o atual): card colorido por `tone`, `maxWidth: 720`, `width: "70%"`, botão `btnEntendi` com `width={135}`.
+3. **Fluxo para combinação repetida**: mantém comportamento atual — apenas `inlineMsg` "Esse robô já foi descoberto. Tente outra combinação." e limpa os slots imediatamente (sem pausa, sem animação).
 
-Botão "limpar" da tela de fundo: já foi condicionado a `!showFinalPopup` em `AssemblyScreen.tsx` em iteração anterior — confirmar que ainda está assim e manter.
+4. **Bloqueio de interação durante `revealing`**:
+   - No `onDragEnd`: se `revealing`, `return` cedo (ignora o drop).
+   - Esconder o botão "limpar" enquanto `revealing` (além da condição atual de `!showFinalPopup`).
+
+5. **Render do robô revelado no centro**:
+   - Quando `revealing`, renderizar um overlay absoluto centralizado em `centerArea` com `<RobotPreview head={revealing.head} body={revealing.body} size={180} />` sobre os slots, com animação leve via classe Tailwind existente (`animate-scale-in`) e uma transição final de "encolher" (aplicar `animate-fade-out` ou `scale-out` nos últimos ~200ms via segundo `setTimeout` opcional). Se complicar, manter apenas o `scale-in` estático por 1,2s conforme permitido pelo usuário.
+   - A mensagem inline "Robô descoberto!" usa o `inlineMsgStyle` atual, mas com cor verde (variante visual: borda `#16a34a`, fundo `#f0fdf4`, texto `#166534`) apenas neste caso — repetições continuam laranja.
+
+6. **Sem alterações** em: assets, lógica de contagem (`found.size`), `FeedbackModal` final, sequência de telas, galeria (`RobotPreview` thumbs), `DragPiece`/`DropSlot`, demais telas.
+
+## Detalhes técnicos
+
+- `inlineMsgStyle` será parametrizado por tom: nova função `inlineStyle(tone: "success" | "warn")` retornando o objeto de estilos. O JSX escolhe o tom conforme o caso (revelação vs repetição/erro).
+- `useRef<number | null>` para o `setTimeout`, com `useEffect` de cleanup.
+- O overlay de revelação fica em `position: absolute` dentro do `centerArea` (que já é `position: absolute`), com `inset: 0`, `display: flex`, centralizado, `pointerEvents: "none"` para não interferir nos slots por baixo.
 
 ## Fora de escopo
 
-Lógica do jogo, mensagens pedagógicas, robôs, galeria, faixa de orientação, fundo da oficina, outros assets, variante `info`.
+Pop-ups por robô, alteração dos assets, da galeria, dos pop-ups finais, da contagem ou da sequência de telas.
