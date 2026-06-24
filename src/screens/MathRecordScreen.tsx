@@ -5,7 +5,7 @@ import ImageButton from "@/components/ImageButton";
 import { btnSeguir } from "@/assets/placeholders";
 import { getHeads, getBodies } from "@/data/robots";
 
-// Tela 7 - Registro matemático 4 × 3
+// Tela 7 - Registro matemático
 export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
   const heads = getHeads(4);
   const bodies = getBodies(3);
@@ -18,7 +18,7 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
 
   const check = () => {
     setInlineMsg(null);
-    if (values.some(v => v.trim() === "")) {
+    if (values.some((v) => v.trim() === "")) {
       setInlineMsg("Preencha todos os campos antes de conferir.");
       return;
     }
@@ -33,7 +33,7 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
 
   const updateVal = (i: number, v: string) => {
     setInlineMsg(null);
-    setValues(prev => prev.map((x, idx) => idx === i ? v : x));
+    setValues((prev) => prev.map((x, idx) => (idx === i ? v : x)));
   };
 
   const handleFinalNext = () => {
@@ -43,54 +43,86 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <ScreenShell
-      title="Vamos registrar com matemática (4 × 3)"
-      subtitle="Como podemos contar sem montar um por um?"
-    >
-      <div style={{
-        position: "absolute", top: 110, left: 180, right: 30, bottom: 100,
-        display: "flex", gap: 16,
-      }}>
-        <div style={{
-          flex: "0 0 320px", background: "rgba(255,255,255,0.9)",
-          borderRadius: 16, border: "3px solid #fbbf24", padding: 14,
-        }}>
+    <ScreenShell title="Vamos registrar com matemática (4 × 3)" subtitle="Como podemos contar sem montar um por um?">
+      <div
+        style={{
+          position: "absolute",
+          top: 110,
+          left: 180,
+          right: 30,
+          bottom: 100,
+          display: "flex",
+          gap: 16,
+        }}
+      >
+        <div
+          style={{
+            flex: "0 0 320px",
+            background: "rgba(255,255,255,0.9)",
+            borderRadius: 16,
+            border: "3px solid #fbbf24",
+            padding: 14,
+          }}
+        >
           <div style={{ fontWeight: 800, marginBottom: 6, color: "#0f172a" }}>Cabeças</div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
-            {heads.map(h => <img key={h.id} src={h.imagem} alt="" style={{ width: 60 }} />)}
+            {heads.map((h) => (
+              <img key={h.id} src={h.imagem} alt="" style={{ width: 60 }} />
+            ))}
           </div>
           <div style={{ fontWeight: 800, marginBottom: 6, color: "#0f172a" }}>Corpos</div>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {bodies.map(b => <img key={b.id} src={b.imagem} alt="" style={{ width: 70 }} />)}
+            {bodies.map((b) => (
+              <img key={b.id} src={b.imagem} alt="" style={{ width: 70 }} />
+            ))}
           </div>
         </div>
 
-        <div style={{
-          flex: 1, background: "rgba(255,255,255,0.95)",
-          borderRadius: 16, border: "3px solid #60a5fa", padding: 18,
-          display: "flex", flexDirection: "column", gap: 10, fontSize: 20,
-        }}>
+        <div
+          style={{
+            flex: 1,
+            background: "rgba(255,255,255,0.95)",
+            borderRadius: 16,
+            border: "3px solid #60a5fa",
+            padding: 18,
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            fontSize: 20,
+          }}
+        >
           <Line>
-            1. Cada cabeça combina com <Input value={values[0]} onChange={v => updateVal(0, v)} /> corpos.
+            1. Cada cabeça combina com <Input value={values[0]} onChange={(v) => updateVal(0, v)} /> corpos.
           </Line>
           <Line>
-            2. Temos <Input value={values[1]} onChange={v => updateVal(1, v)} /> cabeças.
+            2. Temos <Input value={values[1]} onChange={(v) => updateVal(1, v)} /> cabeças.
           </Line>
           <Line>
-            3. Podemos somar: 3 + 3 + 3 + 3 = <Input value={values[2]} onChange={v => updateVal(2, v)} />.
+            3. Podemos somar: 3 + 3 + 3 + 3 = <Input value={values[2]} onChange={(v) => updateVal(2, v)} />.
           </Line>
           <Line>
-            4. Também podemos multiplicar: 4 × 3 = <Input value={values[3]} onChange={v => updateVal(3, v)} />.
+            4. Também podemos multiplicar: 4 × 3 = <Input value={values[3]} onChange={(v) => updateVal(3, v)} />.
           </Line>
 
-          <div style={{ marginTop: "auto", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12 }}>
+          <div
+            style={{ marginTop: "auto", display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12 }}
+          >
             {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
-            <button onClick={check}
+            <button
+              onClick={check}
               style={{
-                padding: "10px 22px", fontSize: 18, fontWeight: 700,
-                background: "#16a34a", color: "white", border: "none",
-                borderRadius: 12, cursor: "pointer",
-              }}>conferir</button>
+                padding: "10px 22px",
+                fontSize: 18,
+                fontWeight: 700,
+                background: "#16a34a",
+                color: "white",
+                border: "none",
+                borderRadius: 12,
+                cursor: "pointer",
+              }}
+            >
+              conferir
+            </button>
           </div>
         </div>
       </div>
@@ -122,17 +154,26 @@ function Input({ value, onChange }: { value: string; onChange: (v: string) => vo
       type="text"
       inputMode="numeric"
       value={value}
-      onChange={e => onChange(e.target.value)}
+      onChange={(e) => onChange(e.target.value)}
       style={{
-        width: 60, fontSize: 20, padding: "4px 8px", textAlign: "center",
-        border: "2px solid #1e293b", borderRadius: 8, margin: "0 4px",
+        width: 60,
+        fontSize: 20,
+        padding: "4px 8px",
+        textAlign: "center",
+        border: "2px solid #1e293b",
+        borderRadius: 8,
+        margin: "0 4px",
       }}
     />
   );
 }
 
 const inlineMsgStyle: React.CSSProperties = {
-  background: "#fff7ed", border: "2px solid #ea580c",
-  color: "#9a3412", fontSize: 14, fontWeight: 600,
-  padding: "6px 12px", borderRadius: 10,
+  background: "#fff7ed",
+  border: "2px solid #ea580c",
+  color: "#9a3412",
+  fontSize: 14,
+  fontWeight: 600,
+  padding: "6px 12px",
+  borderRadius: 10,
 };
