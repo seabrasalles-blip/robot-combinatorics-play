@@ -93,7 +93,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
             onClick={() => { setIdx(i); setInlineMsg(null); }}
             disabled={i > 0 && !solved[i - 1]}
             style={{
-              flex: 1, padding: "10px 12px", fontWeight: 700, fontSize: 16,
+              flex: 1, padding: "8px 10px", fontWeight: 700, fontSize: 14,
               borderRadius: 12, border: "2px solid #1e293b",
               background: idx === i ? "#fde68a" : "white",
               cursor: i > 0 && !solved[i - 1] ? "not-allowed" : "pointer",
@@ -105,32 +105,32 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
       </div>
 
       <div style={{
-        position: "absolute", top: 170, left: 180, right: 30, bottom: 100,
+        position: "absolute", top: 160, left: 180, right: 30, bottom: 90,
         background: "rgba(255,255,255,0.95)", borderRadius: 16,
-        border: "3px solid #60a5fa", padding: "18px 18px 0 18px",
+        border: "3px solid #60a5fa", padding: "14px 18px 0 18px",
         display: "flex", flexDirection: "column", overflow: "hidden",
       }}>
         <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
-          <p style={{ fontSize: 19, margin: "0 0 12px", color: "#0f172a", fontWeight: 600 }}>
+          <p style={{ fontSize: 17, margin: "0 0 10px", color: "#0f172a", fontWeight: 600 }}>
             {s.text}
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 18 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 16 }}>
             {s.lines.map((line, li) => (
-              <div key={li} style={{ color: "#0f172a", lineHeight: 1.6 }}>
+              <div key={li} style={{ color: "#0f172a", lineHeight: 1.4 }}>
                 {renderLine(line, values[idx], setVal)}
               </div>
             ))}
           </div>
         </div>
         <div style={{
-          flexShrink: 0, padding: "14px 6px 18px 0", marginTop: 8,
+          flexShrink: 0, padding: "8px 6px 10px 0", marginTop: 4,
           borderTop: "1px solid #e2e8f0",
           display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12,
         }}>
           {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
           <button onClick={check} disabled={solved[idx]}
             style={{
-              padding: "10px 22px", fontSize: 18, fontWeight: 700,
+              padding: "8px 20px", fontSize: 16, fontWeight: 700,
               background: solved[idx] ? "#94a3b8" : "#16a34a", color: "white",
               border: "none", borderRadius: 12,
               cursor: solved[idx] ? "default" : "pointer",
