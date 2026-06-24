@@ -107,19 +107,26 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
       <div style={{
         position: "absolute", top: 170, left: 180, right: 30, bottom: 100,
         background: "rgba(255,255,255,0.95)", borderRadius: 16,
-        border: "3px solid #60a5fa", padding: 18, overflow: "auto",
+        border: "3px solid #60a5fa", padding: "18px 18px 0 18px",
+        display: "flex", flexDirection: "column", overflow: "hidden",
       }}>
-        <p style={{ fontSize: 20, margin: "0 0 16px", color: "#0f172a", fontWeight: 600 }}>
-          {s.text}
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, fontSize: 19 }}>
-          {s.lines.map((line, li) => (
-            <div key={li} style={{ color: "#0f172a", lineHeight: 1.7 }}>
-              {renderLine(line, values[idx], setVal)}
-            </div>
-          ))}
+        <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+          <p style={{ fontSize: 19, margin: "0 0 12px", color: "#0f172a", fontWeight: 600 }}>
+            {s.text}
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 18 }}>
+            {s.lines.map((line, li) => (
+              <div key={li} style={{ color: "#0f172a", lineHeight: 1.6 }}>
+                {renderLine(line, values[idx], setVal)}
+              </div>
+            ))}
+          </div>
         </div>
-        <div style={{ marginTop: 18, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12 }}>
+        <div style={{
+          flexShrink: 0, padding: "14px 6px 18px 0", marginTop: 8,
+          borderTop: "1px solid #e2e8f0",
+          display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12,
+        }}>
           {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
           <button onClick={check} disabled={solved[idx]}
             style={{
@@ -132,6 +139,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
           </button>
         </div>
       </div>
+
 
       {allDone && !showFinalPopup && (
         <div style={{ position: "absolute", bottom: 22, right: 28 }}>
