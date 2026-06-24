@@ -11,13 +11,16 @@ interface FeedbackModalProps {
 
 export default function FeedbackModal({ open, message, tone = "info", variant = "info", onClose }: FeedbackModalProps) {
   if (!open) return null;
-  const colors = {
+
+  const isFinal = variant === "final";
+
+  const toneColors = {
     success: { border: "#16a34a", bg: "#ecfdf5" },
     info: { border: "#2563eb", bg: "#eff6ff" },
     warn: { border: "#ea580c", bg: "#fff7ed" },
   }[tone];
 
-  const isFinal = variant === "final";
+  const finalMessage = isFinal ? message.replace(/^Muito bem!\s*/i, "") : message;
 
   return (
     <div
@@ -33,36 +36,71 @@ export default function FeedbackModal({ open, message, tone = "info", variant = 
         zIndex: 50,
       }}
     >
-      <div
-        style={{
-          background: colors.bg,
-          border: `5px solid ${colors.border}`,
-          borderRadius: 22,
-          padding: "26px 34px",
-          maxWidth: 720,
-          width: "70%",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
-          textAlign: "center",
-        }}
-      >
-        <p
+      {isFinal ? (
+        <div
           style={{
-            fontSize: 26,
-            lineHeight: 1.35,
-            color: "#0f172a",
-            margin: "0 0 22px",
-            fontWeight: 600,
+            background: "rgba(255,255,255,0.96)",
+            border: "3px solid #f97316",
+            borderRadius: 22,
+            padding: "22px 26px 20px",
+            maxWidth: 420,
+            width: "min(420px, 86%)",
+            boxShadow: "0 12px 28px rgba(0,0,0,0.18)",
+            textAlign: "center",
           }}
         >
-          {message}
-        </p>
-        <ImageButton
-          src={isFinal ? btnSeguir : btnEntendi}
-          alt={isFinal ? "Seguir" : "Entendi"}
-          width={isFinal ? 165 : 135}
-          onClick={onClose}
-        />
-      </div>
+          <h2
+            style={{
+              fontSize: 26,
+              fontWeight: 800,
+              color: "#0f172a",
+              margin: "0 0 10px",
+            }}
+          >
+            Muito bem!
+          </h2>
+          {finalMessage && (
+            <p
+              style={{
+                fontSize: 17,
+                lineHeight: 1.4,
+                fontWeight: 500,
+                color: "#1e293b",
+                margin: "0 0 18px",
+              }}
+            >
+              {finalMessage}
+            </p>
+          )}
+          <ImageButton src={btnSeguir} alt="Seguir" width={160} onClick={onClose} />
+        </div>
+      ) : (
+        <div
+          style={{
+            background: toneColors.bg,
+            border: `5px solid ${toneColors.border}`,
+            borderRadius: 22,
+            padding: "26px 34px",
+            maxWidth: 720,
+            width: "70%",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
+            textAlign: "center",
+          }}
+        >
+          <p
+            style={{
+              fontSize: 26,
+              lineHeight: 1.35,
+              color: "#0f172a",
+              margin: "0 0 22px",
+              fontWeight: 600,
+            }}
+          >
+            {message}
+          </p>
+          <ImageButton src={btnEntendi} alt="Entendi" width={135} onClick={onClose} />
+        </div>
+      )}
     </div>
   );
 }
