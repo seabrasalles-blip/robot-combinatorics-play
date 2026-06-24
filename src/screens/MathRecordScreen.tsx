@@ -43,7 +43,7 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <ScreenShell title="Vamos registrar com matemática (4 × 3)" subtitle="Como podemos contar sem montar um por um?">
+    <ScreenShell title="Vamos registrar com matemática" subtitle="Como podemos contar sem montar um por um?">
       <div
         style={{
           position: "absolute",
