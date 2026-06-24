@@ -6,10 +6,11 @@ interface FeedbackModalProps {
   message: string;
   tone?: "success" | "info" | "warn";
   variant?: "info" | "final";
+  title?: string;
   onClose: () => void;
 }
 
-export default function FeedbackModal({ open, message, tone = "info", variant = "info", onClose }: FeedbackModalProps) {
+export default function FeedbackModal({ open, message, tone = "info", variant = "info", title, onClose }: FeedbackModalProps) {
   if (!open) return null;
 
   const isFinal = variant === "final";
@@ -20,7 +21,9 @@ export default function FeedbackModal({ open, message, tone = "info", variant = 
     warn: { border: "#ea580c", bg: "#fff7ed" },
   }[tone];
 
-  const finalMessage = isFinal ? message.replace(/^Muito bem!\s*/i, "") : message;
+  const finalTitle = title ?? "Muito bem!";
+  const finalMessage = isFinal ? message.replace(/^Muito bem!\s*/i, "").replace(/^Boa escolha!\s*/i, "") : message;
+
 
   return (
     <div
@@ -57,7 +60,8 @@ export default function FeedbackModal({ open, message, tone = "info", variant = 
               margin: "0 0 10px",
             }}
           >
-            Muito bem!
+            {finalTitle}
+
           </h2>
           {finalMessage && (
             <p
