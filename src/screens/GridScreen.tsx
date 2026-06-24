@@ -70,7 +70,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
 
   return (
     <ScreenShell
-      title="Quadro de dupla entrada (3 × 3)"
+      title="Quadro de dupla entrada"
       subtitle="Observe a cabeça no topo e o corpo na lateral. O robô fica no encontro entre os dois."
     >
       <DndContext sensors={sensors} onDragEnd={onDragEnd}>
