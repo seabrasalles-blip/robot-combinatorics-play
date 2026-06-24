@@ -45,6 +45,7 @@ export default function RobotsApp() {
             title="Continue investigando (3 cabeças e 2 corpos)"
             helper="Agora temos 3 cabeças e 2 corpos. Tente descobrir todos os robôs diferentes."
             showTotalInCounter={false}
+            showCounter={false}
             completionMessage="Você encontrou todos os 6 robôs! Com 3 cabeças e 2 corpos, podemos pensar assim: 3 × 2 = 6."
             onNext={() => go(5)}
           />

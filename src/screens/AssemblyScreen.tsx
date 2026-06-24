@@ -18,13 +18,14 @@ interface AssemblyScreenProps {
   title: string;
   helper: string;
   showTotalInCounter: boolean;
+  showCounter?: boolean;
   completionMessage: string;
   onNext: () => void;
 }
 
 export default function AssemblyScreen({
   headsCount, bodiesCount, title, helper,
-  showTotalInCounter, completionMessage, onNext,
+  showTotalInCounter, showCounter = true, completionMessage, onNext,
 }: AssemblyScreenProps) {
   const heads = useMemo(() => getHeads(headsCount), [headsCount]);
   const bodies = useMemo(() => getBodies(bodiesCount), [bodiesCount]);
@@ -105,7 +106,7 @@ export default function AssemblyScreen({
 
         {/* Área central - montagem */}
         <div style={centerArea}>
-          <div style={counter}>{counterText}</div>
+          {showCounter && <div style={counter}>{counterText}</div>}
           <DropSlot id="slot-head" accepts="head" current={head} label="cabeça" width={140} height={120} />
           <div style={{ fontSize: 28, color: "#1e293b", margin: "2px 0" }}>↓</div>
           <DropSlot id="slot-body" accepts="body" current={body} label="corpo" width={160} height={130} />
