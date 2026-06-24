@@ -84,7 +84,7 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <ScreenShell title="Diagrama de caminhos" subtitle="Ligue cada cabeça a cada corpo arrastando.">
+    <ScreenShell title="Diagrama de caminhos" subtitle="Ligue cada cabeça a cada corpo.">
       <div
         style={{
           position: "absolute",
