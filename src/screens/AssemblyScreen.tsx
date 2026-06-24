@@ -110,13 +110,16 @@ export default function AssemblyScreen({
           <DropSlot id="slot-head" accepts="head" current={head} label="cabeça" width={140} height={120} />
           <div style={{ fontSize: 28, color: "#1e293b", margin: "2px 0" }}>↓</div>
           <DropSlot id="slot-body" accepts="body" current={body} label="corpo" width={160} height={130} />
-          <button
-            onClick={() => { setHead(null); setBody(null); setInlineMsg(null); }}
-            style={{
-              marginTop: 14, padding: "6px 16px", borderRadius: 12,
-              border: "2px solid #cbd5e1", background: "white",
-              fontSize: 14, cursor: "pointer", fontWeight: 600,
-            }}>limpar</button>
+          {!showFinalPopup && (
+            <button
+              onClick={() => { setHead(null); setBody(null); setInlineMsg(null); }}
+              style={{
+                marginTop: 14, padding: "6px 16px", borderRadius: 12,
+                border: "2px solid #cbd5e1", background: "white",
+                fontSize: 14, cursor: "pointer", fontWeight: 600,
+              }}>limpar</button>
+          )}
+
           {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
         </div>
 
