@@ -62,7 +62,9 @@ export default function AssemblyScreen({
     const id = getCombinationId(h.id, b.id);
     if (found.has(id)) {
       setInlineTone("warn");
-      setInlineMsg("Esse robô já foi descoberto. Tente outra combinação.");
+      setInlineMsg(
+        "Esse robô já apareceu. Para não repetir, escolha uma cabeça e teste todos os corpos com ela antes de trocar.",
+      );
       setHead(null);
       setBody(null);
       return;
