@@ -57,7 +57,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
     setInlineMsg(null);
     const vs = values[idx];
     if (vs.some(v => v.trim() === "")) {
-      setInlineMsg("Preencha todos os campos da situação.");
+      setInlineMsg("Faltou completar uma parte do raciocínio. Volte ao enunciado e procure quais são os dois grupos de opções.");
       return;
     }
     const ok = vs.every((v, i) => v.trim() === s.answers[i]);
@@ -67,7 +67,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
         setShowFinalPopup(true);
       }
     } else {
-      setInlineMsg("Não some os dois grupos. Cada opção do primeiro grupo combina com todas as opções do segundo.");
+      setInlineMsg("Parece que você somou os dois grupos. Mas aqui queremos descobrir todas as combinações: cada opção de um grupo pode se juntar com todas as opções do outro.");
     }
   };
 

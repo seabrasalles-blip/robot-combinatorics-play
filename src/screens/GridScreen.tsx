@@ -48,10 +48,13 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
     const [, headId, bodyId] = cellId.split("-");
     const expectedId = getCombinationId(headId, bodyId);
     if (comboId !== expectedId) {
-      setInlineMsg("Veja a cabeça da coluna e o corpo da linha. O robô precisa juntar essas duas peças.");
+      setInlineMsg("Ainda não é esse lugar. Procure a coluna da cabeça e a linha do corpo. A casa certa fica onde as duas se encontram.");
       return;
     }
-    if (filled[cellId]) return;
+    if (filled[cellId]) {
+      setInlineMsg("Essa casa já tem um robô. Procure uma casa vazia e confira a cabeça da coluna com o corpo da linha.");
+      return;
+    }
     const next = { ...filled, [cellId]: comboId };
     setFilled(next);
     if (Object.keys(next).length === total) {
