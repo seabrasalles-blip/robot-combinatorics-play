@@ -35,6 +35,16 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
     return list;
   }, [heads, bodies]);
 
+  // Ordem aleatória estável do painel "Arraste os robôs" (definida uma vez por montagem).
+  const shuffledOrder = useMemo(() => {
+    const arr = [...allCombos];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [allCombos]);
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 80, tolerance: 6 } }),
@@ -68,7 +78,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
   };
 
   const placed = new Set(Object.values(filled));
-  const pool = allCombos.filter((c) => !placed.has(c.id));
+  const pool = shuffledOrder.filter((c) => !placed.has(c.id));
 
   const handleFinalNext = () => {
     setShowFinalPopup(false);
