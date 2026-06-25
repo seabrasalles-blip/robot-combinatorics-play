@@ -51,9 +51,7 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
       const el = document.elementFromPoint(ev.clientX, ev.clientY) as HTMLElement | null;
       const bodyId = el?.dataset?.bodyid;
       if (!bodyId) {
-        setInlineMsg(
-          "O caminho precisa sair de uma cabeça e chegar a um corpo. Tente puxar a linha até uma das opções do outro lado.",
-        );
+        setInlineMsg("Ligue uma cabeça a um corpo para formar um caminho.");
       } else {
         addPath(id, bodyId);
       }
@@ -66,9 +64,7 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
   const addPath = (headId: string, bodyId: string) => {
     const key = `${headId}__${bodyId}`;
     if (paths.has(key)) {
-      setInlineMsg(
-        "Essa ligação já foi feita. Para completar todos os caminhos, escolha uma cabeça e confira se ela já foi ligada a todos os corpos.",
-      );
+      setInlineMsg("Esse caminho já foi feito. Procure uma ligação que ainda falta.");
       return;
     }
     const next = new Set(paths);

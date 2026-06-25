@@ -27,9 +27,7 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
       setSolved(true);
       setShowFinalPopup(true);
     } else {
-      setInlineMsg(
-        "Observe os dois grupos. Primeiro veja quantas opções há em um grupo. Depois veja quantas opções combinam com cada uma delas.",
-      );
+      setInlineMsg("Observe quantos corpos e quantas cabeças existem. Cada cabeça combina com todos os corpos.");
     }
   };
 

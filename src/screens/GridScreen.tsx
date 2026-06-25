@@ -48,9 +48,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
     const [, headId, bodyId] = cellId.split("-");
     const expectedId = getCombinationId(headId, bodyId);
     if (comboId !== expectedId) {
-      setInlineMsg(
-        "Ainda não é esse lugar. Procure a coluna da cabeça e a linha do corpo. A casa certa fica onde as duas se encontram.",
-      );
+      setInlineMsg("Veja a cabeça da coluna e o corpo da linha. O robô precisa juntar essas duas peças.");
       return;
     }
     if (filled[cellId]) return;
