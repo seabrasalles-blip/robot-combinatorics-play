@@ -4,7 +4,7 @@ import FeedbackModal from "@/components/FeedbackModal";
 import ImageButton from "@/components/ImageButton";
 import { btnSeguir } from "@/assets/placeholders";
 
-const situations: { title: string; text: string; lines: string[]; answers: string[]; successMessage: string }[] = [
+const situations: { title: string; text: string; lines: string[]; answers: string[]; successMessage: string; swappedMessage: string }[] = [
   {
     title: "Situação 1 — Sorveteria",
     text: "Na sorveteria, há 2 sabores de sorvete e 4 coberturas. Quantas escolhas diferentes podem ser feitas?",
@@ -17,6 +17,7 @@ const situations: { title: string; text: string; lines: string[]; answers: strin
     ],
     answers: ["2", "4", "2", "4", "2", "4", "8", "8"],
     successMessage: "Correto! Cada sabor pode ser combinado com todas as coberturas. Por isso, contamos todas as escolhas possíveis de sorvete.",
+    swappedMessage: "Você encontrou o total correto: 8 escolhas. Como há 2 sabores e cada sabor combina com 4 coberturas, também podemos organizar como 2 grupos de 4.",
   },
   {
     title: "Situação 2 — Caminhos",
@@ -30,6 +31,7 @@ const situations: { title: string; text: string; lines: string[]; answers: strin
     ],
     answers: ["3", "4", "3", "4", "3", "4", "12", "12"],
     successMessage: "Muito bem! Cada entrada pode levar a diferentes trilhas. Você contou todos os caminhos possíveis.",
+    swappedMessage: "Você encontrou o total correto: 12 trajetos. Como há 3 entradas e de cada entrada saem 4 caminhos, também podemos organizar como 3 grupos de 4.",
   },
   {
     title: "Situação 3 — Pulseiras",
@@ -43,8 +45,10 @@ const situations: { title: string; text: string; lines: string[]; answers: strin
     ],
     answers: ["5", "2", "5", "2", "5", "2", "10", "10"],
     successMessage: "Isso mesmo! Cada cor pode combinar com cada pingente. Assim descobrimos quantas pulseiras diferentes podem ser montadas.",
+    swappedMessage: "Você encontrou o total correto: 10 modelos. Agora observe o registro: como há 5 cores e cada cor combina com 2 pingentes, também podemos organizar como 5 grupos de 2.",
   },
 ];
+
 
 export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
   const [idx, setIdx] = useState(0);
