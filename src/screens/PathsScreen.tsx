@@ -220,7 +220,7 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
               })}
             </div>
           </div>
-          {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
+          {inlineMsg && <div style={inlineMsgStyle(inlineTone)}>{inlineMsg}</div>}
         </div>
       </div>
 
@@ -232,7 +232,7 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
 
       <FeedbackModal
         open={showFinalPopup}
-        message="Você encontrou os 6 caminhos. Cada uma das 3 cabeças se ligou aos 2 corpos: 3 × 2 = 6."
+        message="Caminhos completos! Cada linha representa uma combinação diferente."
         tone="success"
         variant="final"
         onClose={handleFinalNext}
@@ -241,13 +241,15 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
   );
 }
 
-const inlineMsgStyle: React.CSSProperties = {
-  background: "#fff7ed",
-  border: "2px solid #ea580c",
-  color: "#9a3412",
-  fontSize: 14,
-  fontWeight: 600,
-  padding: "6px 12px",
-  borderRadius: 10,
-  textAlign: "center",
-};
+const inlineMsgStyle = (tone: "success" | "warn"): React.CSSProperties =>
+  tone === "success"
+    ? {
+        background: "#f0fdf4", border: "2px solid #16a34a",
+        color: "#166534", fontSize: 14, fontWeight: 700,
+        padding: "6px 12px", borderRadius: 10, textAlign: "center", maxWidth: 620,
+      }
+    : {
+        background: "#fff7ed", border: "2px solid #ea580c",
+        color: "#9a3412", fontSize: 14, fontWeight: 600,
+        padding: "6px 12px", borderRadius: 10, textAlign: "center", maxWidth: 620,
+      };
