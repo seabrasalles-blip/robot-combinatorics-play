@@ -63,7 +63,7 @@ export default function AssemblyScreen({
     // Nova combinação: revela montagem no centro por 1,2s antes de enviar à galeria
     setRevealing({ head: h, body: b, id });
     setInlineTone("success");
-    setInlineMsg("Boa combinação! Você juntou uma cabeça e um corpo que ainda não tinham aparecido juntos.");
+    setInlineMsg("Boa combinação! Esse robô ainda não estava na galeria.");
     revealTimer.current = window.setTimeout(() => {
       setFound(prev => {
         const next = new Set(prev); next.add(id);
