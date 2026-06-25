@@ -1,28 +1,22 @@
-## Objetivo
-Tornar o feedback das telas de montagem sempre visível, mesmo quando o robô grande é revelado no centro.
+Tarefa: ajustar a tela 5 (Quadro de dupla entrada) para que a ordem visual dos robôs no painel lateral "Arraste os robôs" seja randômica, mas permaneça estável durante a atividade.
 
-## Mudanças em `src/screens/AssemblyScreen.tsx`
+Escopo
+- Alterar apenas `src/screens/GridScreen.tsx`.
+- Não alterar `src/data/robots.ts`, IDs, imagens, combinações corretas, validação do quadro, ordem das cabeças no topo nem dos corpos na lateral.
+- Manter layout, tamanho dos cards e grade 3×3 do painel lateral.
+- Garantir que drag-and-drop continue funcionando com os robôs em ordem diferente.
 
-1. **Reposicionar a faixa de feedback (`inlineMsg`)**
-   - Tirar do fluxo da coluna central (onde é coberta pelo robô revelado).
-   - Renderizar como elemento posicionado absolutamente no topo da área central, logo abaixo da faixa de título/instrução (ex.: `position: absolute; top: 8px; left: 50%; transform: translateX(-50%); zIndex: 50`).
-   - Adicionar sombra suave (`boxShadow: "0 6px 16px rgba(0,0,0,0.12)"`) e manter largura confortável (`maxWidth: 420`, `whiteSpace` adequado).
+Implementação
+1. Criar uma função utilitária de embaralhamento (Fisher–Yates) dentro de `GridScreen.tsx` ou em `src/data/robots.ts`, sem side effects.
+2. Gerar, uma única vez na montagem do componente, uma lista `shuffledOrder` com todos os 9 robôs combinados em ordem aleatória.
+   - Usar `useMemo` para estabilidade.
+   - A lista é baseada em `allCombos`, que já é estável via `useMemo`.
+3. Para renderizar o painel lateral, filtrar `shuffledOrder` para remover robôs já colocados no quadro (`placed`).
+   - A filtragem preserva a ordem aleatória original.
+4. Não reordenar a lista a cada renderização, a cada tentativa ou a cada arraste.
 
-2. **Garantir z-index acima do robô revelado**
-   - Faixa de feedback com `zIndex: 50`.
-   - Container do robô revelado permanece com `zIndex` menor (default), de modo que a mensagem nunca seja coberta.
-
-3. **Texto do feedback de acerto**
-   - Substituir a mensagem atual de sucesso por:
-     `"Boa combinação! Esse robô ainda não estava na galeria."`
-   - Estilo: fundo verde claro (`#f0fdf4`), borda verde (`#16a34a`), texto verde escuro (`#166534`), sombra suave.
-
-4. **Feedback de erro/atenção**
-   - Mantém os textos atuais (peça no lugar errado, robô repetido).
-   - Mesma posição/visibilidade da faixa de sucesso, com cor clara de atenção (fundo `#fff7ed`, borda `#ea580c`, texto `#9a3412`) e mesma sombra.
-
-5. **Não alterar**
-   - Lógica de `tryCheck`, `onDragEnd`, timer de revelação (1,2s), envio à galeria, modal final, contador, painéis laterais.
-
-## Resultado esperado
-Durante a revelação do robô montado, a faixa de feedback aparece centralizada acima do robô, sempre legível, sem encobrir a imagem.
+Validação
+- Conferir que a tela renderiza 9 cards em grade 3×3 no painel lateral.
+- Conferir que após arrastar um robô corretamente para o quadro, os robôs restantes mantêm suas posições.
+- Conferir que o drag-and-drop continua respondendo e validando as combinações corretas.
+- Rodar build/typecheck para garantir que não há regressões de tipo.
