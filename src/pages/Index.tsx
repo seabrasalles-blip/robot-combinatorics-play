@@ -33,7 +33,7 @@ export default function RobotsApp() {
             title="Vamos montar!"
             helper="Arraste uma cabeça e um corpo para o centro."
             showTotalInCounter
-            completionMessage="Você encontrou todos os 4 robôs! Cada cabeça combinou com cada corpo."
+            completionMessage="Você completou a galeria! Todas as cabeças foram combinadas com todos os corpos."
             onNext={() => go(4)}
           />
         )}
@@ -46,7 +46,7 @@ export default function RobotsApp() {
             helper="Agora temos 3 cabeças e 2 corpos. Monte todos os robôs possíveis."
             showTotalInCounter={false}
             showCounter={false}
-            completionMessage="Você encontrou todos os 6 robôs! Com 3 cabeças e 2 corpos, podemos pensar assim: 3 × 2 = 6."
+            completionMessage="Você completou a galeria! Todas as cabeças foram combinadas com todos os corpos."
             onNext={() => go(5)}
           />
         )}

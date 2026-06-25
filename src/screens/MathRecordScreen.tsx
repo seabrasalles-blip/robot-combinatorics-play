@@ -135,7 +135,7 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
 
       <FeedbackModal
         open={showFinalPopup}
-        message="Isso mesmo! São 4 grupos de 3 combinações. Por isso, 4 × 3 = 12."
+        message="Excelente! Você transformou as combinações em registro matemático. A soma repetida e a multiplicação mostram o mesmo total."
         tone="success"
         variant="final"
         onClose={handleFinalNext}
