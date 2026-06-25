@@ -49,7 +49,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
     const expectedId = getCombinationId(headId, bodyId);
     if (comboId !== expectedId) {
       setInlineMsg(
-        "Observe com calma: a coluna mostra a cabeça e a linha mostra o corpo. O robô deve ficar no encontro dessas duas pistas.",
+        "Ainda não é esse lugar. Procure a coluna da cabeça e a linha do corpo. A casa certa fica onde as duas se encontram.",
       );
       return;
     }
