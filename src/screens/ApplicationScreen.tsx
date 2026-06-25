@@ -135,7 +135,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
           borderTop: "1px solid #e2e8f0",
           display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12,
         }}>
-          {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
+          {inlineMsg && <div style={inlineMsgStyle(inlineTone)}>{inlineMsg}</div>}
           <button onClick={check} disabled={solved[idx]}
             style={{
               padding: "8px 20px", fontSize: 16, fontWeight: 700,
@@ -157,7 +157,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
 
       <FeedbackModal
         open={showFinalPopup}
-        message="Muito bem! Você usou o mesmo jeito de pensar dos robôs em todas as situações."
+        message="Parabéns! Você usou a mesma ideia em situações diferentes: combinar cada opção de um grupo com todas as opções do outro."
         tone="success"
         variant="final"
         onClose={handleFinalNext}
@@ -185,8 +185,15 @@ function renderLine(template: string, values: string[], setVal: (i: number, v: s
   });
 }
 
-const inlineMsgStyle: React.CSSProperties = {
-  background: "#fff7ed", border: "2px solid #ea580c",
-  color: "#9a3412", fontSize: 14, fontWeight: 600,
-  padding: "6px 12px", borderRadius: 10,
-};
+const inlineMsgStyle = (tone: "success" | "warn"): React.CSSProperties =>
+  tone === "success"
+    ? {
+        background: "#f0fdf4", border: "2px solid #16a34a",
+        color: "#166534", fontSize: 13, fontWeight: 700,
+        padding: "6px 12px", borderRadius: 10, flex: 1, lineHeight: 1.3,
+      }
+    : {
+        background: "#fff7ed", border: "2px solid #ea580c",
+        color: "#9a3412", fontSize: 13, fontWeight: 600,
+        padding: "6px 12px", borderRadius: 10, flex: 1, lineHeight: 1.3,
+      };
