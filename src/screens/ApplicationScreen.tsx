@@ -63,25 +63,45 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
 
   const check = () => {
     setInlineMsg(null);
-    const vs = values[idx];
-    if (vs.some(v => v.trim() === "")) {
+    const vs = values[idx].map(v => v.trim());
+    if (vs.some(v => v === "")) {
       setInlineTone("warn");
       setInlineMsg("Faltou completar uma parte do raciocínio. Volte ao enunciado e procure quais são os dois grupos de opções.");
       return;
     }
-    const ok = vs.every((v, i) => v.trim() === s.answers[i]);
-    if (ok) {
+    const a = s.answers[0];
+    const b = s.answers[1];
+    const total = String(parseInt(a, 10) * parseInt(b, 10));
+    const sum = String(parseInt(a, 10) + parseInt(b, 10));
+
+    const enunciadoOk = vs[0] === a && vs[1] === b;
+    const pairDirect = vs[2] === a && vs[3] === b;
+    const pairSwapped = vs[2] === b && vs[3] === a;
+    const multDirect = vs[4] === a && vs[5] === b;
+    const multSwapped = vs[4] === b && vs[5] === a;
+    const totalOk = vs[6] === total && vs[7] === total;
+
+    const direct = enunciadoOk && pairDirect && multDirect && totalOk;
+    const swapped = enunciadoOk && pairSwapped && multSwapped && totalOk;
+
+    if (direct || swapped) {
       const ns = [...solved]; ns[idx] = true; setSolved(ns);
       setInlineTone("success");
-      setInlineMsg(s.successMessage);
+      setInlineMsg(swapped ? s.swappedMessage : s.successMessage);
       if (ns.every(Boolean)) {
         setShowFinalPopup(true);
       }
-    } else {
-      setInlineTone("warn");
+      return;
+    }
+
+    setInlineTone("warn");
+    if (vs[6] === sum || vs[7] === sum) {
       setInlineMsg("Parece que você somou os dois grupos. Mas aqui queremos descobrir todas as combinações: cada opção de um grupo pode se juntar com todas as opções do outro.");
+    } else {
+      setInlineMsg("Revise as combinações: cada opção de um grupo pode se juntar com cada opção do outro. Quantas possibilidades aparecem quando todas as opções de um grupo encontram todas as opções do outro?");
     }
   };
+
 
   const setVal = (i: number, v: string) => {
     setInlineMsg(null);
