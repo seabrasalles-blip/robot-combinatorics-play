@@ -120,7 +120,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
               </Fragment>
             ))}
           </div>
-          {inlineMsg && <div style={{ ...inlineMsgStyle, marginTop: 12 }}>{inlineMsg}</div>}
+          {inlineMsg && <div style={{ ...inlineMsgStyle(inlineTone), marginTop: 12 }}>{inlineMsg}</div>}
         </div>
 
         <div
@@ -165,7 +165,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
 
         <FeedbackModal
           open={showFinalPopup}
-          message="Muito bem! O quadro mostra 9 combinações: 3 cabeças × 3 corpos = 9 robôs."
+          message="Quadro completo! Ele ajuda a organizar as combinações e a conferir se nenhuma possibilidade ficou de fora."
           tone="success"
           variant="final"
           onClose={handleFinalNext}
@@ -183,16 +183,18 @@ const headerCell: React.CSSProperties = {
   borderRadius: 10,
 };
 
-const inlineMsgStyle: React.CSSProperties = {
-  background: "#fff7ed",
-  border: "2px solid #ea580c",
-  color: "#9a3412",
-  fontSize: 14,
-  fontWeight: 600,
-  padding: "6px 12px",
-  borderRadius: 10,
-  textAlign: "center",
-};
+const inlineMsgStyle = (tone: "success" | "warn"): React.CSSProperties =>
+  tone === "success"
+    ? {
+        background: "#f0fdf4", border: "2px solid #16a34a",
+        color: "#166534", fontSize: 14, fontWeight: 700,
+        padding: "6px 12px", borderRadius: 10, textAlign: "center", maxWidth: 560,
+      }
+    : {
+        background: "#fff7ed", border: "2px solid #ea580c",
+        color: "#9a3412", fontSize: 14, fontWeight: 600,
+        padding: "6px 12px", borderRadius: 10, textAlign: "center", maxWidth: 560,
+      };
 
 function Cell({
   id,
