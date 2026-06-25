@@ -25,6 +25,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
 
   const [filled, setFilled] = useState<Record<string, string>>({});
   const [inlineMsg, setInlineMsg] = useState<string | null>(null);
+  const [inlineTone, setInlineTone] = useState<"success" | "warn">("warn");
   const [showFinalPopup, setShowFinalPopup] = useState(false);
   const done = Object.keys(filled).length === total;
 
@@ -48,15 +49,19 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
     const [, headId, bodyId] = cellId.split("-");
     const expectedId = getCombinationId(headId, bodyId);
     if (comboId !== expectedId) {
+      setInlineTone("warn");
       setInlineMsg("Ainda não é esse lugar. Procure a coluna da cabeça e a linha do corpo. A casa certa fica onde as duas se encontram.");
       return;
     }
     if (filled[cellId]) {
+      setInlineTone("warn");
       setInlineMsg("Essa casa já tem um robô. Procure uma casa vazia e confira a cabeça da coluna com o corpo da linha.");
       return;
     }
     const next = { ...filled, [cellId]: comboId };
     setFilled(next);
+    setInlineTone("success");
+    setInlineMsg("Isso mesmo! O robô ficou no encontro da cabeça da coluna com o corpo da linha.");
     if (Object.keys(next).length === total) {
       setShowFinalPopup(true);
     }
@@ -115,7 +120,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
               </Fragment>
             ))}
           </div>
-          {inlineMsg && <div style={{ ...inlineMsgStyle, marginTop: 12 }}>{inlineMsg}</div>}
+          {inlineMsg && <div style={{ ...inlineMsgStyle(inlineTone), marginTop: 12 }}>{inlineMsg}</div>}
         </div>
 
         <div
@@ -160,7 +165,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
 
         <FeedbackModal
           open={showFinalPopup}
-          message="Muito bem! O quadro mostra 9 combinações: 3 cabeças × 3 corpos = 9 robôs."
+          message="Quadro completo! Ele ajuda a organizar as combinações e a conferir se nenhuma possibilidade ficou de fora."
           tone="success"
           variant="final"
           onClose={handleFinalNext}
@@ -178,16 +183,18 @@ const headerCell: React.CSSProperties = {
   borderRadius: 10,
 };
 
-const inlineMsgStyle: React.CSSProperties = {
-  background: "#fff7ed",
-  border: "2px solid #ea580c",
-  color: "#9a3412",
-  fontSize: 14,
-  fontWeight: 600,
-  padding: "6px 12px",
-  borderRadius: 10,
-  textAlign: "center",
-};
+const inlineMsgStyle = (tone: "success" | "warn"): React.CSSProperties =>
+  tone === "success"
+    ? {
+        background: "#f0fdf4", border: "2px solid #16a34a",
+        color: "#166534", fontSize: 14, fontWeight: 700,
+        padding: "6px 12px", borderRadius: 10, textAlign: "center", maxWidth: 560,
+      }
+    : {
+        background: "#fff7ed", border: "2px solid #ea580c",
+        color: "#9a3412", fontSize: 14, fontWeight: 600,
+        padding: "6px 12px", borderRadius: 10, textAlign: "center", maxWidth: 560,
+      };
 
 function Cell({
   id,

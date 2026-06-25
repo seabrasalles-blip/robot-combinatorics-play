@@ -63,7 +63,7 @@ export default function AssemblyScreen({
     // Nova combinação: revela montagem no centro por 1,2s antes de enviar à galeria
     setRevealing({ head: h, body: b, id });
     setInlineTone("success");
-    setInlineMsg("Robô descoberto!");
+    setInlineMsg("Boa combinação! Você juntou uma cabeça e um corpo que ainda não tinham aparecido juntos.");
     revealTimer.current = window.setTimeout(() => {
       setFound(prev => {
         const next = new Set(prev); next.add(id);
@@ -251,10 +251,10 @@ const inlineStyle = (tone: "success" | "warn"): React.CSSProperties =>
     ? {
         marginTop: 12, background: "#f0fdf4", border: "2px solid #16a34a",
         color: "#166534", fontSize: 14, fontWeight: 700,
-        padding: "6px 12px", borderRadius: 10, maxWidth: 260, textAlign: "center",
+        padding: "6px 12px", borderRadius: 10, maxWidth: 320, textAlign: "center",
       }
     : {
         marginTop: 12, background: "#fff7ed", border: "2px solid #ea580c",
         color: "#9a3412", fontSize: 14, fontWeight: 600,
-        padding: "6px 12px", borderRadius: 10, maxWidth: 260, textAlign: "center",
+        padding: "6px 12px", borderRadius: 10, maxWidth: 320, textAlign: "center",
       };

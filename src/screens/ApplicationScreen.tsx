@@ -4,7 +4,7 @@ import FeedbackModal from "@/components/FeedbackModal";
 import ImageButton from "@/components/ImageButton";
 import { btnSeguir } from "@/assets/placeholders";
 
-const situations: { title: string; text: string; lines: string[]; answers: string[] }[] = [
+const situations: { title: string; text: string; lines: string[]; answers: string[]; successMessage: string }[] = [
   {
     title: "Situação 1 — Sorveteria",
     text: "Na sorveteria, há 2 sabores de sorvete e 4 coberturas. Quantas escolhas diferentes podem ser feitas?",
@@ -16,6 +16,7 @@ const situations: { title: string; text: string; lines: string[]; answers: strin
       "Resposta: podem ser feitas {7} escolhas diferentes.",
     ],
     answers: ["2", "4", "2", "4", "2", "4", "8", "8"],
+    successMessage: "Correto! Cada sabor pode ser combinado com todas as coberturas. Por isso, contamos todas as escolhas possíveis de sorvete.",
   },
   {
     title: "Situação 2 — Caminhos",
@@ -28,6 +29,7 @@ const situations: { title: string; text: string; lines: string[]; answers: strin
       "Resposta: Ana pode fazer {7} trajetos.",
     ],
     answers: ["3", "4", "3", "4", "3", "4", "12", "12"],
+    successMessage: "Muito bem! Cada entrada pode levar a diferentes trilhas. Você contou todos os caminhos possíveis.",
   },
   {
     title: "Situação 3 — Pulseiras",
@@ -40,6 +42,7 @@ const situations: { title: string; text: string; lines: string[]; answers: strin
       "Resposta: podem ser criados {7} modelos de pulseira.",
     ],
     answers: ["5", "2", "5", "2", "5", "2", "10", "10"],
+    successMessage: "Isso mesmo! Cada cor pode combinar com cada pingente. Assim descobrimos quantas pulseiras diferentes podem ser montadas.",
   },
 ];
 
@@ -48,6 +51,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
   const [values, setValues] = useState<string[][]>(situations.map(s => s.answers.map(() => "")));
   const [solved, setSolved] = useState<boolean[]>([false, false, false]);
   const [inlineMsg, setInlineMsg] = useState<string | null>(null);
+  const [inlineTone, setInlineTone] = useState<"success" | "warn">("warn");
   const [showFinalPopup, setShowFinalPopup] = useState(false);
 
   const allDone = solved.every(Boolean);
@@ -57,16 +61,20 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
     setInlineMsg(null);
     const vs = values[idx];
     if (vs.some(v => v.trim() === "")) {
+      setInlineTone("warn");
       setInlineMsg("Faltou completar uma parte do raciocínio. Volte ao enunciado e procure quais são os dois grupos de opções.");
       return;
     }
     const ok = vs.every((v, i) => v.trim() === s.answers[i]);
     if (ok) {
       const ns = [...solved]; ns[idx] = true; setSolved(ns);
+      setInlineTone("success");
+      setInlineMsg(s.successMessage);
       if (ns.every(Boolean)) {
         setShowFinalPopup(true);
       }
     } else {
+      setInlineTone("warn");
       setInlineMsg("Parece que você somou os dois grupos. Mas aqui queremos descobrir todas as combinações: cada opção de um grupo pode se juntar com todas as opções do outro.");
     }
   };
@@ -127,7 +135,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
           borderTop: "1px solid #e2e8f0",
           display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12,
         }}>
-          {inlineMsg && <div style={inlineMsgStyle}>{inlineMsg}</div>}
+          {inlineMsg && <div style={inlineMsgStyle(inlineTone)}>{inlineMsg}</div>}
           <button onClick={check} disabled={solved[idx]}
             style={{
               padding: "8px 20px", fontSize: 16, fontWeight: 700,
@@ -149,7 +157,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
 
       <FeedbackModal
         open={showFinalPopup}
-        message="Muito bem! Você usou o mesmo jeito de pensar dos robôs em todas as situações."
+        message="Parabéns! Você usou a mesma ideia em situações diferentes: combinar cada opção de um grupo com todas as opções do outro."
         tone="success"
         variant="final"
         onClose={handleFinalNext}
@@ -177,8 +185,15 @@ function renderLine(template: string, values: string[], setVal: (i: number, v: s
   });
 }
 
-const inlineMsgStyle: React.CSSProperties = {
-  background: "#fff7ed", border: "2px solid #ea580c",
-  color: "#9a3412", fontSize: 14, fontWeight: 600,
-  padding: "6px 12px", borderRadius: 10,
-};
+const inlineMsgStyle = (tone: "success" | "warn"): React.CSSProperties =>
+  tone === "success"
+    ? {
+        background: "#f0fdf4", border: "2px solid #16a34a",
+        color: "#166534", fontSize: 13, fontWeight: 700,
+        padding: "6px 12px", borderRadius: 10, flex: 1, lineHeight: 1.3,
+      }
+    : {
+        background: "#fff7ed", border: "2px solid #ea580c",
+        color: "#9a3412", fontSize: 13, fontWeight: 600,
+        padding: "6px 12px", borderRadius: 10, flex: 1, lineHeight: 1.3,
+      };
