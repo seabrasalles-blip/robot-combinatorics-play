@@ -14,6 +14,7 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
   const [paths, setPaths] = useState<Set<string>>(new Set());
   const [dragging, setDragging] = useState<{ from: string; x: number; y: number } | null>(null);
   const [inlineMsg, setInlineMsg] = useState<string | null>(null);
+  const [inlineTone, setInlineTone] = useState<"success" | "warn">("warn");
   const [showFinalPopup, setShowFinalPopup] = useState(false);
 
   const areaRef = useRef<HTMLDivElement>(null);
@@ -51,6 +52,7 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
       const el = document.elementFromPoint(ev.clientX, ev.clientY) as HTMLElement | null;
       const bodyId = el?.dataset?.bodyid;
       if (!bodyId) {
+        setInlineTone("warn");
         setInlineMsg("O caminho precisa sair de uma cabeça e chegar a um corpo. Tente puxar a linha até uma das opções do outro lado.");
       } else {
         addPath(id, bodyId);
@@ -64,6 +66,7 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
   const addPath = (headId: string, bodyId: string) => {
     const key = `${headId}__${bodyId}`;
     if (paths.has(key)) {
+      setInlineTone("warn");
       setInlineMsg("Essa ligação já foi feita. Para completar todos os caminhos, escolha uma cabeça e confira se ela já foi ligada a todos os corpos.");
       return;
     }
@@ -72,6 +75,9 @@ export default function PathsScreen({ onNext }: { onNext: () => void }) {
     setPaths(next);
     if (next.size === total) {
       setShowFinalPopup(true);
+    } else {
+      setInlineTone("success");
+      setInlineMsg("Caminho correto! Essa linha mostra uma combinação possível entre uma cabeça e um corpo.");
     }
   };
 
