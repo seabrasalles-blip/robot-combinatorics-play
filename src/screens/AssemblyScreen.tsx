@@ -63,7 +63,7 @@ export default function AssemblyScreen({
     // Nova combinação: revela montagem no centro por 1,2s antes de enviar à galeria
     setRevealing({ head: h, body: b, id });
     setInlineTone("success");
-    setInlineMsg("Boa combinação! Você juntou uma cabeça e um corpo que ainda não tinham aparecido juntos.");
+    setInlineMsg("Boa combinação! Esse robô ainda não estava na galeria.");
     revealTimer.current = window.setTimeout(() => {
       setFound(prev => {
         const next = new Set(prev); next.add(id);
@@ -246,15 +246,21 @@ const pieceGrid: React.CSSProperties = {
   display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8,
   justifyItems: "center",
 };
+const inlineBase: React.CSSProperties = {
+  position: "absolute",
+  top: 6,
+  left: "50%",
+  transform: "translateX(-50%)",
+  zIndex: 50,
+  fontSize: 14,
+  fontWeight: 700,
+  padding: "8px 16px",
+  borderRadius: 12,
+  maxWidth: 460,
+  textAlign: "center",
+  boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+};
 const inlineStyle = (tone: "success" | "warn"): React.CSSProperties =>
   tone === "success"
-    ? {
-        marginTop: 12, background: "#f0fdf4", border: "2px solid #16a34a",
-        color: "#166534", fontSize: 14, fontWeight: 700,
-        padding: "6px 12px", borderRadius: 10, maxWidth: 320, textAlign: "center",
-      }
-    : {
-        marginTop: 12, background: "#fff7ed", border: "2px solid #ea580c",
-        color: "#9a3412", fontSize: 14, fontWeight: 600,
-        padding: "6px 12px", borderRadius: 10, maxWidth: 320, textAlign: "center",
-      };
+    ? { ...inlineBase, background: "#f0fdf4", border: "2px solid #16a34a", color: "#166534" }
+    : { ...inlineBase, background: "#fff7ed", border: "2px solid #ea580c", color: "#9a3412" };
