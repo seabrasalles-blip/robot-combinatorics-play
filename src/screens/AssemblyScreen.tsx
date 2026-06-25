@@ -56,7 +56,7 @@ export default function AssemblyScreen({
     const id = getCombinationId(h.id, b.id);
     if (found.has(id)) {
       setInlineTone("warn");
-      setInlineMsg("Esse robô já foi descoberto. Tente outra combinação.");
+      setInlineMsg("Esse robô já está na galeria. Para não repetir, escolha uma cabeça e teste todos os corpos com ela antes de trocar.");
       setHead(null); setBody(null);
       return;
     }
@@ -87,7 +87,7 @@ export default function AssemblyScreen({
     const accepts = over.data.current?.accepts;
     if (kind !== accepts) {
       setInlineTone("warn");
-      setInlineMsg("Coloque cabeça no espaço de cabeça e corpo no espaço de corpo.");
+      setInlineMsg("Observe os espaços: a cabeça fica em cima e o corpo fica embaixo. Arraste cada peça para o lugar certo.");
       return;
     }
     if (kind === "head") {

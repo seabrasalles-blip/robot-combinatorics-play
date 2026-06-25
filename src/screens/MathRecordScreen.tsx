@@ -19,7 +19,7 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
   const check = () => {
     setInlineMsg(null);
     if (values.some((v) => v.trim() === "")) {
-      setInlineMsg("Preencha todos os campos antes de conferir.");
+      setInlineMsg("Ainda há espaços vazios. Complete cada parte do registro para mostrar como você pensou.");
       return;
     }
     const ok = values.every((v, i) => v.trim() === expected[i]);
@@ -27,7 +27,7 @@ export default function MathRecordScreen({ onNext }: { onNext: () => void }) {
       setSolved(true);
       setShowFinalPopup(true);
     } else {
-      setInlineMsg("Observe quantos corpos e quantas cabeças existem. Cada cabeça combina com todos os corpos.");
+      setInlineMsg("Observe os dois grupos. Primeiro veja quantas opções há em um grupo. Depois pense: quantas opções combinam com cada uma delas?");
     }
   };
 

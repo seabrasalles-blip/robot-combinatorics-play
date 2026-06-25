@@ -1,15 +1,39 @@
-## Problema
+## Objetivo
 
-Na tela "Outras situações", a última linha de cada situação ("Resposta: …") aparece cortada/escondida pelo rodapé do card branco. Isso ocorre porque o conteúdo (texto da pergunta + 5 linhas com inputs + rodapé com botão "conferir") não cabe na altura disponível e o container usa `overflow: hidden`.
+Trocar os textos de feedback de erro/aviso das telas interativas pelas novas versões pedagógicas, mantendo o visual atual (faixa inline laranja) e sem alterar lógica de jogo nem layout.
 
-## Correção (apenas `src/screens/ApplicationScreen.tsx`)
+## Alterações por arquivo
 
-Ajustes visuais para todo o conteúdo caber em 1200×675 sem scroll e sem corte:
+### `src/screens/AssemblyScreen.tsx`
+- Linha 59 — robô repetido: trocar para  
+  *"Esse robô já está na galeria. Para não repetir, escolha uma cabeça e teste todos os corpos com ela antes de trocar."*
+- Linha 90 — peça no espaço errado: trocar para  
+  *"Observe os espaços: a cabeça fica em cima e o corpo fica embaixo. Arraste cada peça para o lugar certo."*
+- (Conforme resposta do usuário) **não** adicionar feedback de "solto fora da área".
 
-1. **Card branco**: subir o topo de `top: 170` para `top: 160` e descer o fundo de `bottom: 100` para `bottom: 90`, ganhando ~20px de altura útil. Reduzir padding interno de `18px 18px 0 18px` para `14px 18px 0 18px`.
-2. **Texto da pergunta**: reduzir `fontSize` de 19 → 17 e `margin-bottom` de 12 → 10.
-3. **Linhas com inputs**: reduzir `gap` de 10 → 6, `fontSize` de 18 → 16, `lineHeight` de 1.6 → 1.4. Inputs: `width` 56 → 48, `fontSize` 19 → 16, `padding` `4px 8px` → `2px 6px`.
-4. **Rodapé do card**: reduzir `padding` de `14px 6px 18px 0` para `8px 6px 10px 0` e `marginTop` 8 → 4. Botão "conferir": `padding` `10px 22px` → `8px 20px`, `fontSize` 18 → 16.
-5. **Abas de situação (topo)**: reduzir `padding` `10px 12px` → `8px 10px` e `fontSize` 16 → 14, para abrir mais espaço vertical.
+### `src/screens/GridScreen.tsx`
+- Linha 51 — célula errada: trocar para  
+  *"Ainda não é esse lugar. Procure a coluna da cabeça e a linha do corpo. A casa certa fica onde as duas se encontram."*
+- Linha 54 — adicionar feedback quando a célula já está preenchida (`if (filled[cellId]) { setInlineMsg("Essa casa já tem um robô. Procure uma casa vazia e confira a cabeça da coluna com o corpo da linha."); return; }`).
 
-Resultado: as 5 linhas (incluindo "Resposta: …") ficam totalmente visíveis nas 3 situações, sem barra de rolagem e sem alterar lógica nem outras telas.
+### `src/screens/PathsScreen.tsx`
+- Linha 54 — linha que não chega a um corpo: trocar para  
+  *"O caminho precisa sair de uma cabeça e chegar a um corpo. Tente puxar a linha até uma das opções do outro lado."*
+- Linha 67 — caminho repetido: trocar para  
+  *"Essa ligação já foi feita. Para completar todos os caminhos, escolha uma cabeça e confira se ela já foi ligada a todos os corpos."*
+
+### `src/screens/MathRecordScreen.tsx`
+- Linha 22 — campos vazios: trocar para  
+  *"Ainda há espaços vazios. Complete cada parte do registro para mostrar como você pensou."*
+- Linha 30 — erro de preenchimento: trocar para  
+  *"Observe os dois grupos. Primeiro veja quantas opções há em um grupo. Depois pense: quantas opções combinam com cada uma delas?"*
+
+### `src/screens/ApplicationScreen.tsx`
+- Linha 60 — campos vazios: trocar para  
+  *"Faltou completar uma parte do raciocínio. Volte ao enunciado e procure quais são os dois grupos de opções."*
+- Linha 70 — erro de cálculo: trocar para  
+  *"Parece que você somou os dois grupos. Mas aqui queremos descobrir todas as combinações: cada opção de um grupo pode se juntar com todas as opções do outro."*
+
+## Fora de escopo
+- Layout, cores e estilos da faixa inline permanecem inalterados (já são compactos: padding 6×12, fonte 14px).
+- Nenhuma alteração na lógica do jogo, modais finais, assets ou estrutura das telas.
