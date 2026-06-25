@@ -78,7 +78,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
   };
 
   const placed = new Set(Object.values(filled));
-  const pool = allCombos.filter((c) => !placed.has(c.id));
+  const pool = shuffledOrder.filter((c) => !placed.has(c.id));
 
   const handleFinalNext = () => {
     setShowFinalPopup(false);
