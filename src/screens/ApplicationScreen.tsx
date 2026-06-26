@@ -128,20 +128,29 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
         position: "absolute", top: 110, left: 180, right: 30,
         display: "flex", gap: 8,
       }}>
+      <div style={{
+        position: "absolute", top: 110, left: 180, right: 30,
+        display: "flex", gap: 8, alignItems: "center",
+      }}>
         {situations.map((sit, i) => (
-          <button key={i}
-            onClick={() => { setIdx(i); setInlineMsg(null); }}
-            disabled={i > 0 && !solved[i - 1]}
+          <div key={i}
             style={{
               flex: 1, padding: "8px 10px", fontWeight: 700, fontSize: 14,
               borderRadius: 12, border: "2px solid #1e293b",
               background: idx === i ? "#fde68a" : "white",
-              cursor: i > 0 && !solved[i - 1] ? "not-allowed" : "pointer",
-              opacity: i > 0 && !solved[i - 1] ? 0.5 : 1,
+              color: "#0f172a", textAlign: "center",
+              opacity: i > idx && !solved[i] ? 0.55 : 1,
             }}>
             {sit.title}{solved[i] ? " ✓" : ""}
-          </button>
+          </div>
         ))}
+        <div style={{
+          flexShrink: 0, padding: "8px 14px", fontWeight: 800, fontSize: 14,
+          borderRadius: 12, background: "rgba(255,255,255,0.95)",
+          border: "2px solid #1e40af", color: "#1e40af",
+        }}>
+          Situação {idx + 1} de {situations.length}
+        </div>
       </div>
 
       <div style={{
