@@ -90,9 +90,15 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
       const ns = [...solved]; ns[idx] = true; setSolved(ns);
       setInlineTone("success");
       setInlineMsg(swapped ? s.swappedMessage : s.successMessage);
-      if (ns.every(Boolean)) {
-        setShowFinalPopup(true);
-      }
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+      advanceTimer.current = setTimeout(() => {
+        if (idx < situations.length - 1) {
+          setIdx(idx + 1);
+          setInlineMsg(null);
+        } else {
+          setShowFinalPopup(true);
+        }
+      }, 2800);
       return;
     }
 
