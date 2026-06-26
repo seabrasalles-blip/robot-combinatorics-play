@@ -55,8 +55,12 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
   const [inlineMsg, setInlineMsg] = useState<string | null>(null);
   const [inlineTone, setInlineTone] = useState<"success" | "warn">("warn");
   const [showFinalPopup, setShowFinalPopup] = useState(false);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const allDone = solved.every(Boolean);
+  useEffect(() => () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+  }, []);
+
   const s = situations[idx];
 
   const check = () => {
