@@ -1,22 +1,28 @@
-# Ajuste do tempo de exibição do feedback de acerto
+## Avanço automático na tela "Aplicando em outras situações"
 
-## O que será feito
+Arquivo afetado: `src/screens/ApplicationScreen.tsx`
 
-Aumentar o tempo de exibição do feedback de acerto (e do robô montado no centro) nas telas de montagem dos robôs, de aproximadamente 1,2 segundo para aproximadamente 3 segundos, dando tempo suficiente para a criança ler a mensagem antes de o robô ser enviado à galeria.
+### Mudanças
 
-## Arquivo afetado
+1. **Avanço automático após acerto**
+   - Na função `check`, quando a resposta for considerada correta (`direct || swapped`), além de marcar `solved[idx] = true` e exibir o feedback verde, agendar um `setTimeout` de 2800 ms para:
+     - Se ainda houver próxima situação: incrementar `idx`, limpar `inlineMsg`, manter os valores já zerados da próxima situação (já são `""` por padrão na inicialização de `values`).
+     - Se for a última (`idx === situations.length - 1`): abrir o `FeedbackModal` final (`setShowFinalPopup(true)`), como já acontece hoje.
+   - Guardar o id do timeout em um `useRef` e limpá-lo no `useEffect` de unmount para evitar avanços indevidos.
 
-- `src/screens/AssemblyScreen.tsx`
+2. **Remover avanço manual intermediário**
+   - Os botões de navegação superiores entre situações deixam de ser necessários para avançar, mas continuam visíveis apenas como indicador de etapa concluída (mantém o `✓`). Vou desabilitar o clique manual (mantendo o estado visual), já que o avanço passa a ser automático. Isso evita que o aluno pule etapas.
+   - O botão "Seguir" lateral (que aparecia quando `allDone`) é removido, pois o modal final cuida da transição.
 
-## Mudança técnica
+3. **Indicador de progresso "Situação X de 3"**
+   - Adicionar um pequeno selo acima do card de conteúdo (à direita do conjunto de abas das situações ou logo abaixo delas) com o texto `Situação {idx + 1} de {situations.length}`, em destaque azul-escuro sobre fundo branco translúcido, alinhado ao padrão visual das outras telas.
 
-1. Alterar o valor do `setTimeout` na função `tryCheck` de `1200` ms para `3000` ms.
-2. Atualizar o comentário próximo ao timer para refletir o novo tempo ("3s" no lugar de "1,2s").
+4. **Erro continua na mesma situação**
+   - Nenhuma mudança: o fluxo de erro já mantém o aluno na situação atual; apenas garantimos que o `setTimeout` de avanço só seja criado no ramo de acerto.
 
-## O que não muda
+### O que NÃO muda
 
-- Posição e z-index do feedback (continua acima do robô, visível).
-- Texto da mensagem: "Boa combinação! Esse robô ainda não estava na galeria."
-- Lógica de validação das combinações.
-- Envio do robô para a galeria após o timer.
-- Mecânica principal do jogo (arrastar peças, montar, limpar, galeria, modal final).
+- Enunciados, dados, `answers`, `successMessage`, `swappedMessage`.
+- Função `check` na parte de validação (ordem direta/invertida, detecção de soma, etc.).
+- Layout do card, inputs, mensagem inline, estilo do botão "conferir".
+- `FeedbackModal` final ao concluir a última situação.

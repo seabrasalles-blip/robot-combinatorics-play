@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ScreenShell from "@/components/ScreenShell";
 import FeedbackModal from "@/components/FeedbackModal";
-import ImageButton from "@/components/ImageButton";
-import { btnSeguir } from "@/assets/placeholders";
 
 const situations: { title: string; text: string; lines: string[]; answers: string[]; successMessage: string; swappedMessage: string }[] = [
   {
@@ -57,8 +55,12 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
   const [inlineMsg, setInlineMsg] = useState<string | null>(null);
   const [inlineTone, setInlineTone] = useState<"success" | "warn">("warn");
   const [showFinalPopup, setShowFinalPopup] = useState(false);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const allDone = solved.every(Boolean);
+  useEffect(() => () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+  }, []);
+
   const s = situations[idx];
 
   const check = () => {
@@ -88,9 +90,15 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
       const ns = [...solved]; ns[idx] = true; setSolved(ns);
       setInlineTone("success");
       setInlineMsg(swapped ? s.swappedMessage : s.successMessage);
-      if (ns.every(Boolean)) {
-        setShowFinalPopup(true);
-      }
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+      advanceTimer.current = setTimeout(() => {
+        if (idx < situations.length - 1) {
+          setIdx(idx + 1);
+          setInlineMsg(null);
+        } else {
+          setShowFinalPopup(true);
+        }
+      }, 2800);
       return;
     }
 
@@ -118,22 +126,27 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
     <ScreenShell title="Outras situações" subtitle="Use o mesmo raciocínio dos robôs.">
       <div style={{
         position: "absolute", top: 110, left: 180, right: 30,
-        display: "flex", gap: 8,
+        display: "flex", gap: 8, alignItems: "center",
       }}>
         {situations.map((sit, i) => (
-          <button key={i}
-            onClick={() => { setIdx(i); setInlineMsg(null); }}
-            disabled={i > 0 && !solved[i - 1]}
+          <div key={i}
             style={{
               flex: 1, padding: "8px 10px", fontWeight: 700, fontSize: 14,
               borderRadius: 12, border: "2px solid #1e293b",
               background: idx === i ? "#fde68a" : "white",
-              cursor: i > 0 && !solved[i - 1] ? "not-allowed" : "pointer",
-              opacity: i > 0 && !solved[i - 1] ? 0.5 : 1,
+              color: "#0f172a", textAlign: "center",
+              opacity: i > idx && !solved[i] ? 0.55 : 1,
             }}>
             {sit.title}{solved[i] ? " ✓" : ""}
-          </button>
+          </div>
         ))}
+        <div style={{
+          flexShrink: 0, padding: "8px 14px", fontWeight: 800, fontSize: 14,
+          borderRadius: 12, background: "rgba(255,255,255,0.95)",
+          border: "2px solid #1e40af", color: "#1e40af",
+        }}>
+          Situação {idx + 1} de {situations.length}
+        </div>
       </div>
 
       <div style={{
@@ -173,11 +186,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
       </div>
 
 
-      {allDone && !showFinalPopup && (
-        <div style={{ position: "absolute", bottom: 22, right: 28 }}>
-          <ImageButton src={btnSeguir} alt="Seguir" width={220} onClick={onNext} />
-        </div>
-      )}
+
 
       <FeedbackModal
         open={showFinalPopup}
