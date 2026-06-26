@@ -97,16 +97,22 @@ export default function FinalScreen({ onRestart }: FinalScreenProps) {
           border: "4px solid #fbbf24",
         }}>
           <p style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#0f172a", lineHeight: 1.35 }}>
-            Hoje você aprendeu que existem vários jeitos de contar combinações.
+            Hoje você descobriu que combinar também é uma forma de contar!
           </p>
-          <ul style={{ margin: "14px 0 0", paddingLeft: 24, fontSize: 18, color: "#0f172a", lineHeight: 1.6 }}>
-            <li>2 cabeças e 2 corpos → 2 × 2 = 4 robôs.</li>
-            <li>3 cabeças e 2 corpos → 3 × 2 = 6 robôs.</li>
-            <li>3 cabeças e 3 corpos → 3 × 3 = 9 robôs.</li>
-            <li>4 cabeças e 3 corpos → 4 × 3 = 12 robôs.</li>
+          <p style={{ margin: "12px 0 0", fontSize: 18, color: "#0f172a", lineHeight: 1.45 }}>
+            Na Oficina dos Robôs, cada cabeça podia combinar com todos os corpos:
+          </p>
+          <ul style={{ margin: "8px 0 0", paddingLeft: 24, fontSize: 18, color: "#0f172a", lineHeight: 1.6 }}>
+            <li>2 × 2 = 4 robôs</li>
+            <li>3 × 2 = 6 robôs</li>
+            <li>3 × 3 = 9 robôs</li>
+            <li>4 × 3 = 12 robôs</li>
           </ul>
-          <p style={{ margin: "14px 0 0", fontSize: 18, color: "#1e293b", fontStyle: "italic", lineHeight: 1.4 }}>
-            Quando cada opção de um grupo combina com todas as opções de outro grupo, podemos multiplicar.
+          <p style={{ margin: "14px 0 0", fontSize: 18, color: "#1e293b", lineHeight: 1.45 }}>
+            Quando cada opção de um grupo combina com todas as opções de outro, podemos usar a multiplicação para descobrir o total.
+          </p>
+          <p style={{ margin: "10px 0 0", fontSize: 18, color: "#1e293b", fontStyle: "italic", lineHeight: 1.45 }}>
+            Combinar com organização ajuda a não repetir e a não esquecer nenhuma possibilidade!
           </p>
         </div>
       </div>
