@@ -224,6 +224,10 @@ function Cell({
     <div
       ref={setNodeRef}
       style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        boxSizing: "border-box",
         background: filled
           ? "#ecfdf5"
           : isOver
@@ -238,7 +242,11 @@ function Cell({
         justifyContent: "center",
       }}
     >
-      {combo && <RobotPreview head={combo.head} body={combo.body} size={60} />}
+      {combo && (
+        <div style={{ pointerEvents: "none" }}>
+          <RobotPreview head={combo.head} body={combo.body} size={60} />
+        </div>
+      )}
     </div>
   );
 }
