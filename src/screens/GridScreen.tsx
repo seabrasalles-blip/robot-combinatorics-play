@@ -137,7 +137,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
         <div
           style={{
             position: "absolute",
-            right: 18,
+            left: 18,
             top: 110,
             width: 230,
             bottom: 110,
