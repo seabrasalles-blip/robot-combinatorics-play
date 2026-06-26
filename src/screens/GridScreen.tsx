@@ -8,6 +8,7 @@ import {
   useSensors,
   useDraggable,
   useDroppable,
+  pointerWithin,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import ScreenShell from "@/components/ScreenShell";
