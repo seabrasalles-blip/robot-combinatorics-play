@@ -99,7 +99,6 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
             left: 280,
             top: 130,
             width: 560,
-            width: 560,
           }}
         >
           <div
