@@ -92,12 +92,13 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
       title="Quadro de dupla entrada"
       subtitle="Observe a cabeça no topo e o corpo na lateral. O robô fica no encontro entre os dois."
     >
-      <DndContext sensors={sensors} onDragEnd={onDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={pointerWithin} onDragEnd={onDragEnd}>
         <div
           style={{
             position: "absolute",
-            left: 200,
+            left: 280,
             top: 130,
+            width: 560,
             width: 560,
           }}
         >
