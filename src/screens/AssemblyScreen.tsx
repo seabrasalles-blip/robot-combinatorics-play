@@ -60,7 +60,7 @@ export default function AssemblyScreen({
       setHead(null); setBody(null);
       return;
     }
-    // Nova combinação: revela montagem no centro por 1,2s antes de enviar à galeria
+    // Nova combinação: revela montagem no centro por 3s antes de enviar à galeria
     setRevealing({ head: h, body: b, id });
     setInlineTone("success");
     setInlineMsg("Boa combinação! Esse robô ainda não estava na galeria.");
@@ -74,7 +74,7 @@ export default function AssemblyScreen({
       setRevealing(null);
       setInlineMsg(null);
       revealTimer.current = null;
-    }, 1200);
+    }, 3000);
   };
 
   const onDragEnd = (e: DragEndEvent) => {
