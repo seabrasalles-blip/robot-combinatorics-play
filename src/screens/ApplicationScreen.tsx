@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ScreenShell from "@/components/ScreenShell";
 import FeedbackModal from "@/components/FeedbackModal";
-import ImageButton from "@/components/ImageButton";
-import { btnSeguir } from "@/assets/placeholders";
 
 const situations: { title: string; text: string; lines: string[]; answers: string[]; successMessage: string; swappedMessage: string }[] = [
   {
