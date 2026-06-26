@@ -126,10 +126,6 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
     <ScreenShell title="Outras situações" subtitle="Use o mesmo raciocínio dos robôs.">
       <div style={{
         position: "absolute", top: 110, left: 180, right: 30,
-        display: "flex", gap: 8,
-      }}>
-      <div style={{
-        position: "absolute", top: 110, left: 180, right: 30,
         display: "flex", gap: 8, alignItems: "center",
       }}>
         {situations.map((sit, i) => (
