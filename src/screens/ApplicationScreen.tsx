@@ -186,11 +186,7 @@ export default function ApplicationScreen({ onNext }: { onNext: () => void }) {
       </div>
 
 
-      {allDone && !showFinalPopup && (
-        <div style={{ position: "absolute", bottom: 22, right: 28 }}>
-          <ImageButton src={btnSeguir} alt="Seguir" width={220} onClick={onNext} />
-        </div>
-      )}
+
 
       <FeedbackModal
         open={showFinalPopup}
