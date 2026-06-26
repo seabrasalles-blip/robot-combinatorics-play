@@ -8,6 +8,7 @@ import {
   useSensors,
   useDraggable,
   useDroppable,
+  pointerWithin,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import ScreenShell from "@/components/ScreenShell";
@@ -91,11 +92,11 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
       title="Quadro de dupla entrada"
       subtitle="Observe a cabeça no topo e o corpo na lateral. O robô fica no encontro entre os dois."
     >
-      <DndContext sensors={sensors} onDragEnd={onDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={pointerWithin} onDragEnd={onDragEnd}>
         <div
           style={{
             position: "absolute",
-            left: 200,
+            left: 280,
             top: 130,
             width: 560,
           }}
@@ -136,7 +137,7 @@ export default function GridScreen({ onNext }: { onNext: () => void }) {
         <div
           style={{
             position: "absolute",
-            right: 18,
+            left: 18,
             top: 110,
             width: 230,
             bottom: 110,
@@ -223,6 +224,10 @@ function Cell({
     <div
       ref={setNodeRef}
       style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        boxSizing: "border-box",
         background: filled
           ? "#ecfdf5"
           : isOver
@@ -237,7 +242,11 @@ function Cell({
         justifyContent: "center",
       }}
     >
-      {combo && <RobotPreview head={combo.head} body={combo.body} size={60} />}
+      {combo && (
+        <div style={{ pointerEvents: "none" }}>
+          <RobotPreview head={combo.head} body={combo.body} size={60} />
+        </div>
+      )}
     </div>
   );
 }
